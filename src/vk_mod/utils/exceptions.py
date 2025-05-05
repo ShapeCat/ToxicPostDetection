@@ -1,2 +1,0 @@
-class HashNotMatchException(Exception):
-    pass

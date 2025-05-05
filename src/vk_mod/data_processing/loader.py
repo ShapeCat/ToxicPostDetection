@@ -1,17 +1,12 @@
 import pandas as pd
 from pathlib import Path
 from ..const import SEED
-from ..utils import hashing
-from ..utils.exceptions import HashNotMatchException
 
 
-def load_dataset(path:Path, sample_limit:int=-1, quiet:bool=False, check_hash=False) -> pd.DataFrame:
+def load_dataset(path:Path, sample_limit:int=-1, quiet:bool=False) -> pd.DataFrame:
     if not path.exists() or not path.is_file():
         raise FileNotFoundError(f"File not found or {str(path)} is not file.")
     if not quiet: print(f"File {str(path)} found. Loading...")
-
-    if check_hash and not hashing.verify_file_hash(path, quiet):
-        raise HashNotMatchException("file hash not match")
 
     if path.suffix == ".txt":
         df = _parse_txt_data(path)
