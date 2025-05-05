@@ -1,11 +1,11 @@
 import numpy as np
-from keras.utils import PyDataset
+from keras import utils
 from sklearn.model_selection import train_test_split
 from .encoding import TextEncoderAbstract
 from ..const import SEED
 
 
-class TextDataset(PyDataset):
+class TextDataset(utils.PyDataset):
     def __init__(self, texts:list[str], labels:list, batchSize:int=32, encoder:TextEncoderAbstract|None=None, samplesLimit:int = -1, **kwargs) -> None:
         super().__init__(**kwargs)
         if(samplesLimit == -1):
