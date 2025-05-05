@@ -1,0 +1,12 @@
+[build-system]
+requires = ["setuptools>=61.0"]
+build-backend = "setuptools.build_meta"
+
+[project]
+name = "vk_mod"
+version = "0.0.1"
+description = "Мой проект"
+authors = [{name = "VK Mod System", email = "therenoinformation@gmail.com"}]
+
+[tool.setuptools.package-dir]
+"vk_mod" = "src/vk_mod"

@@ -1,8 +1,8 @@
-from transformers import AutoTokenizer, AutoModelForSequenceClassification
-from typing import List, Dict, Union
-import numpy as np
 import torch
-from src.models.abstract import ToxicClassificationModelAbstract
+import numpy as np
+from typing import List, Dict, Union
+from transformers import AutoTokenizer, AutoModelForSequenceClassification
+from .abstract import ToxicClassificationModelAbstract
 
 
 class RuBertModel(ToxicClassificationModelAbstract):

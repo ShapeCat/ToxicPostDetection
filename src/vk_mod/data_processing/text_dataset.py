@@ -1,9 +1,10 @@
 import numpy as np
 from keras.utils import PyDataset
 from typing import List, Optional, Any, Tuple
-from src.data_processing.encoding import TextEncoderAbstract
 from sklearn.model_selection import train_test_split
-from src.const import SEED
+from .encoding import TextEncoderAbstract
+from ..const import SEED
+
 
 class TextDataset(PyDataset):
     def __init__(self, texts:List[str], labels:list, batchSize:int=32, encoder:Optional[TextEncoderAbstract]=None, samplesLimit:int = -1, **kwargs) -> None:

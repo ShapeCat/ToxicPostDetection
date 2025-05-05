@@ -1,13 +1,12 @@
-import tensorflow as tf
 import keras
-from keras import layers
-from src.models.abstract import ToxicClassificationModelAbstract
-from src.data_processing.text_dataset import train_val_split
-from pathlib import Path
-from keras import callbacks
-from typing import List, Optional, Dict, Union
 import numpy as np
-from src.data_processing.encoding import TextEncoderAbstract
+import tensorflow as tf
+from keras import layers, callbacks
+from pathlib import Path
+from typing import List, Optional, Dict, Union
+from ..data_processing.encoding import TextEncoderAbstract
+from ..data_processing.text_dataset import train_val_split
+from .abstract import ToxicClassificationModelAbstract
 
 
 tf.random.set_seed(42)

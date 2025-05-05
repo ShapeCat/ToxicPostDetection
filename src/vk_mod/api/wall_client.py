@@ -1,5 +1,5 @@
-from .base_client import BaseAPIClient
 from typing import List, Dict
+from .base_client import BaseAPIClient
 
 
 class WallAPIClient(BaseAPIClient):

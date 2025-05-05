@@ -1,4 +1,3 @@
-
 from .wall_client import WallAPIClient
 from .chat_client import ChatClient
 

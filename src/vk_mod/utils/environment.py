@@ -1,6 +1,7 @@
 from dotenv import dotenv_values
 from typing import Any, Optional
 
+
 def load_env(value_name:str, default_value:Optional[Any]=None) -> Any:
     try:
         env = dotenv_values("../.env")

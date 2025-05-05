@@ -1,9 +1,9 @@
 import pandas as pd
-from src.const import SEED
 from pathlib import Path
 from typing import List, Tuple
-from src.utils import hashing
-from src.utils.exceptions import HashNotMatchException
+from ..const import SEED
+from ..utils import hashing
+from ..utils.exceptions import HashNotMatchException
 
 
 def load_dataset(path:Path, sample_limit:int=-1, quiet:bool=False, check_hash=False) -> pd.DataFrame:

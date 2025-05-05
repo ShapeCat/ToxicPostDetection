@@ -1,8 +1,8 @@
+import numpy as np
 from detoxify import Detoxify
 from typing import Dict, List, Union
 from numpy import ndarray
-import numpy as np
-from src.models.abstract import ToxicClassificationModelAbstract
+from .abstract import ToxicClassificationModelAbstract
 
 
 class DetoxifyModel(ToxicClassificationModelAbstract):

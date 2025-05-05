@@ -1,6 +1,6 @@
-from .base_client import BaseAPIClient
 from typing import List, Dict
 from random import randint
+from .base_client import BaseAPIClient
 
 
 class ChatClient(BaseAPIClient):

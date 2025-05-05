@@ -1,9 +1,9 @@
 import pickle
 import numpy as np
 from abc import abstractmethod
-from keras.layers import TextVectorization
-from typing import Union, List, Optional
 from pathlib import Path
+from typing import Union, List, Optional
+from keras.layers import TextVectorization
 from keras.utils import pad_sequences
 
 
