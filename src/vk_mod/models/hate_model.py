@@ -3,7 +3,6 @@ import numpy as np
 import tensorflow as tf
 from keras import layers, callbacks
 from pathlib import Path
-from typing import List, Optional, Dict, Union
 from ..data_processing.encoding import TextEncoderAbstract
 from ..data_processing.text_dataset import train_val_split
 from .abstract import ToxicClassificationModelAbstract
@@ -13,7 +12,7 @@ tf.random.set_seed(42)
 
 
 class ToxicClassificationModel(ToxicClassificationModelAbstract):
-    labels:List[str] = ["normal", "insult", "threat", "obscenity"]
+    labels:list[str] = ["normal", "insult", "threat", "obscenity"]
     temp_folder:Path = Path("../temp")
     model_path:Path = Path("../pretrained_models/text_classification/text_model.keras")
     encoder_path:Path = Path("../pretrained_models/text_classification/")
@@ -44,12 +43,12 @@ class ToxicClassificationModel(ToxicClassificationModelAbstract):
         reduceLR = callbacks.ReduceLROnPlateau()
         self.model.fit(train_dataset,batch_size=batch_size,epochs=epochs,verbose=2,validation_data=val_dataset,callbacks=[early_stopping, modelBackup, reduceLR])
 
-    def save(self, path:Optional[Path]=None) -> None:
+    def save(self, path:Path|None=None) -> None:
         if not path:
             path = self.model_path
         self.model.save(path)
 
-    def predict(self, texts: Union[str, List[str]], aggregate: bool = False) -> float | Dict[str, float]:
+    def predict(self, texts:str|list[str], aggregate:bool = False) -> float | dict[str, float]:
         if isinstance(texts, str):
             texts = [texts]
         encoded = self.encoder.encode(texts)
@@ -59,6 +58,6 @@ class ToxicClassificationModel(ToxicClassificationModelAbstract):
             return self.agregate_proba(proba)
         return dict(zip(self.labels, proba))
     
-    def agregate_proba(self, proba:List[float]) -> float:
+    def agregate_proba(self, proba:list[float]) -> float:
          array = np.array(proba)
          return 1 - array.T[0] * (1 - array.T[-1])

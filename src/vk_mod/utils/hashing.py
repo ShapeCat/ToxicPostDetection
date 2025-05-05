@@ -1,9 +1,8 @@
 import hashlib
-from typing import Union
 from pathlib import Path
 
 
-def compute_file_hash(file_path:Union[Path, str], quiet=False) -> None:
+def compute_file_hash(file_path:Path|str, quiet=False) -> None:
     file_path = Path(file_path)
     hash_path = file_path.with_suffix(file_path.suffix + ".hash")
 
@@ -19,7 +18,7 @@ def compute_file_hash(file_path:Union[Path, str], quiet=False) -> None:
         print(f"File hash saved to: {hash_path}.") 
 
 
-def verify_file_hash(file_path:Union[Path, str], quiet=False) -> bool:
+def verify_file_hash(file_path:Path|str, quiet=False) -> bool:
     file_path = Path(file_path)
     hash_path = file_path.with_suffix(file_path.suffix + ".hash")
 

@@ -1,13 +1,12 @@
 import numpy as np
 from keras.utils import PyDataset
-from typing import List, Optional, Any, Tuple
 from sklearn.model_selection import train_test_split
 from .encoding import TextEncoderAbstract
 from ..const import SEED
 
 
 class TextDataset(PyDataset):
-    def __init__(self, texts:List[str], labels:list, batchSize:int=32, encoder:Optional[TextEncoderAbstract]=None, samplesLimit:int = -1, **kwargs) -> None:
+    def __init__(self, texts:list[str], labels:list, batchSize:int=32, encoder:TextEncoderAbstract|None=None, samplesLimit:int = -1, **kwargs) -> None:
         super().__init__(**kwargs)
         if(samplesLimit == -1):
             samplesLimit = min(len(texts), len(labels))
@@ -31,10 +30,8 @@ class TextDataset(PyDataset):
         self.inputs = self.encoder.encode(self.inputs)
     
 
-def train_val_split(X:List[str], Y:Any, batchSize:int=32) -> Tuple[TextDataset, TextDataset]:
+def train_val_split(X:list[str], Y, batchSize:int=32) -> tuple[TextDataset, TextDataset]:
     X_train, X_test, y_train, y_test = train_test_split(X, Y, random_state=SEED, test_size=0.2)
     train_dataset = TextDataset(X_train, y_train, batchSize)
     test_dataset = TextDataset(X_test, y_test, batchSize)
     return train_dataset, test_dataset
-
-

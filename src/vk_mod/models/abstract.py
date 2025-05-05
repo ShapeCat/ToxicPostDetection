@@ -1,25 +1,25 @@
 import numpy as np
 from abc import abstractmethod
-from typing import List, Dict, Union, overload
+from typing import overload
 from sklearn.metrics import log_loss, accuracy_score
 
 
 class ToxicClassificationModelAbstract():
-    labels:List[str] = None
+    labels:list[str] = None
 
     @abstractmethod
-    def predict(self, texts:List[str], aggregate:bool=False) -> Union[float,Dict[str, float]]:
+    def predict(self, texts:list[str], aggregate:bool=False) -> float|dict[str, float]:
         raise NotImplementedError()
 
     @abstractmethod
-    def agregate_proba(self, proba:List[float]) -> float:
+    def agregate_proba(self, proba:list[float]) -> float:
         raise NotImplementedError()
 
     @overload
-    def score(self, texts:List[str], expected:List[float]) -> None:
+    def score(self, texts:list[str], expected:list[float]) -> None:
         ...
     @overload
-    def score(self, texts:List[str], expected:List[List[float]]) -> None:    
+    def score(self, texts:list[str], expected:list[list[float]]) -> None:    
         ...
     def score(self, texts, expected):
         if len(texts) != len(expected):

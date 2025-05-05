@@ -1,6 +1,5 @@
 import pandas as pd
 from pathlib import Path
-from typing import List, Tuple
 from ..const import SEED
 from ..utils import hashing
 from ..utils.exceptions import HashNotMatchException
@@ -29,13 +28,13 @@ def load_dataset(path:Path, sample_limit:int=-1, quiet:bool=False, check_hash=Fa
     return df
 
 def _parse_txt_data(path:Path) -> pd.DataFrame:
-    data_list:List[Tuple[str, int, int, int, int]] = []
+    data_list:list[tuple[str, int, int, int, int]] = []
     with path.open(encoding="utf-8") as file:
         for line in file:
             labels:str = line.split(maxsplit=1)[0]
             text:str = line[len(labels)+1:].strip()
-            label_list:List[str] = labels.split(",")
-            labels_masks:List[int] = [1 if "__label__NORMAL" in label_list else 0.,
+            label_list:list[str] = labels.split(",")
+            labels_masks:list[int] = [1 if "__label__NORMAL" in label_list else 0.,
                     1. if "__label__INSULT" in label_list else 0.,
                     1. if "__label__THREAT" in label_list else 0.,
                     1. if "__label__OBSCENITY" in label_list else 0.]

@@ -1,4 +1,3 @@
-from typing import List, Dict
 from random import randint
 from .base_client import BaseAPIClient
 
@@ -18,7 +17,7 @@ class ChatClient(BaseAPIClient):
         response = self.post_request("messages.send", params, self.community_token)
         return response
 
-    def get_message_by_id(self, message_id:int) -> List[Dict[str, str]]:
+    def get_message_by_id(self, message_id:int) -> list[dict[str, str]]:
         params = {
             'peer_id': self.admin_id,
             'cmids': message_id,
@@ -26,7 +25,7 @@ class ChatClient(BaseAPIClient):
         response = self.get_request("messages.getById", params, self.community_token)
         return response['items']
 
-    def get_all_chat_messages(self, count:int=200) -> List[Dict[str, str]]:
+    def get_all_chat_messages(self, count:int=200) -> list[dict[str, str]]:
         params = {
             'peer_id': self.admin_id,
             'count': count,
@@ -34,7 +33,7 @@ class ChatClient(BaseAPIClient):
         response = self.get_request("messages.getHistory", params, self.community_token)
         return response['items']
 
-    def delete_message(self, message_id:int, delete_for_all:bool=True) -> List[Dict[str, str]]:  
+    def delete_message(self, message_id:int, delete_for_all:bool=True) -> list[dict[str, str]]:  
         params = {
             'peer_id': self.admin_id,
             'cmids': message_id,

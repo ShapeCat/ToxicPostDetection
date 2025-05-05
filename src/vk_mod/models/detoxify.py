@@ -1,7 +1,5 @@
 import numpy as np
 from detoxify import Detoxify
-from typing import Dict, List, Union
-from numpy import ndarray
 from .abstract import ToxicClassificationModelAbstract
 
 
@@ -12,12 +10,12 @@ class DetoxifyModel(ToxicClassificationModelAbstract):
     def __init__(self) -> None:
         self.model = Detoxify(self.MODEL_TYPE)
 
-    def predict(self, text:str, aggregate:bool=False) -> Union[float, Dict[str, float]]:
-        pred:Dict[str, float] = self.model.predict(text)
+    def predict(self, text:str, aggregate:bool=False) -> float|dict[str, float]:
+        pred:dict[str, float] = self.model.predict(text)
         if aggregate:
             values = np.array([val for val in pred.values()], dtype=np.float32)
             return self.agregate_proba(values)
         return pred
 
-    def agregate_proba(self, proba:List[float]) -> float:
+    def agregate_proba(self, proba:list[float]) -> float:
         return max(proba)

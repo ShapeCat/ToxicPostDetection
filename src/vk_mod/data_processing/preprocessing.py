@@ -1,7 +1,6 @@
 import re, demoji, string, nltk
 import pandas as pd
 from IPython.display import display
-from typing import Set, List
 from num2words import num2words
 from nltk.corpus import stopwords
 from nltk.stem import WordNetLemmatizer
@@ -12,7 +11,7 @@ tqdm.pandas()
 
 class TextPreprocessing():
     lemmatizer:WordNetLemmatizer = WordNetLemmatizer()
-    stop_words:Set[str] = set(stopwords.words('russian'))
+    stop_words:set[str] = set(stopwords.words('russian'))
     mention_paceholder:str = "УПОМЯНАНИЕ"
     link_placeholder:str = "ССЫЛКА"
 
@@ -58,7 +57,7 @@ class TextPreprocessing():
 
     @staticmethod
     def lemmatize(text:str) -> str:
-        words:List[str] = nltk.word_tokenize(text, language="russian")
+        words:list[str] = nltk.word_tokenize(text, language="russian")
         words = [TextPreprocessing.lemmatizer.lemmatize(w) for w in words]
         words = [WordNetLemmatizer().lemmatize(w, pos='v') for w in words]
         return ' '.join(words)
