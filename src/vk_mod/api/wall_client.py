@@ -1,7 +1,7 @@
 from .base_client import BaseAPIClient
 
 
-class WallAPIClient(BaseAPIClient):
+class WallClient(BaseAPIClient):
     def get_wall_posts(self, community_id:int|str, count=100) -> list[dict[str, str]]:
         params = {
             "domain": f"-{community_id}", 

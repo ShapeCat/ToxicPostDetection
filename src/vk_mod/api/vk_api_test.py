@@ -1,6 +1,6 @@
 import pytest
 from .vk_api import VK_API  
-from .wall_client import WallAPIClient
+from .wall_client import WallClient
 from .chat_client import ChatClient
 
 
@@ -23,7 +23,7 @@ def test_vk_api_init_success():
         service_key=service_key,
         admin_id=admin_id
         )
-    assert isinstance(vk_api.wall, WallAPIClient)
+    assert isinstance(vk_api.wall, WallClient)
     assert isinstance(vk_api.chat, ChatClient)
 
 
