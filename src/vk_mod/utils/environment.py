@@ -14,7 +14,7 @@ def load_env(value_name:str, default_value:bool|None=None) -> bool|None:
     Returns:
         bool|None: Loaded value or None if default_value is None.
     """
-    ...
+    ... # pragma: no cover
 @overload
 def load_env(value_name:str, default_value:int|None=None) -> int|None: 
     """
@@ -27,7 +27,7 @@ def load_env(value_name:str, default_value:int|None=None) -> int|None:
     Returns:
         int|None: Loaded value or None if default_value is None.
     """
-    ...
+    ... # pragma: no cover
 @overload
 def load_env(value_name:str, default_value:str|None=None) -> str|None: 
     """
@@ -40,7 +40,7 @@ def load_env(value_name:str, default_value:str|None=None) -> str|None:
     Returns:
         str|None: Loaded value or None if default_value is None.
     """
-    ...
+    ... # pragma: no cover
 @overload
 def load_env(value_name:str, default_value:float|None=None) -> float|None: 
     """
@@ -53,7 +53,7 @@ def load_env(value_name:str, default_value:float|None=None) -> float|None:
     Returns:
         float|None: Loaded value or None if default_value is None.
     """
-    ...
+    ... # pragma: no cover
 def load_env(value_name: str, default_value: bool|int|str|float|None = None) -> bool|int|str|float|None:
     try:
         env = dotenv_values("../.env")
