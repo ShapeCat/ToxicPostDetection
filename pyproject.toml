@@ -7,6 +7,11 @@ name = "vk_mod"
 version = "0.0.1"
 description = "Мой проект"
 authors = [{name = "VK Mod System", email = "therenoinformation@gmail.com"}]
+requires-python = ">=3.10.6"
+dynamic = ["dependencies"]
 
 [tool.setuptools.package-dir]
 "vk_mod" = "src/vk_mod"
+
+[tool.setuptools.dynamic]
+dependencies = {file = ["requirements.txt"]}
