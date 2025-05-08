@@ -32,14 +32,14 @@ class ChatClient(BaseAPIClient):
         }
         response = self.get_request("messages.getHistory", params, self.community_token)
         return response['items']
-
+    
     def delete_message(self, message_id:int, delete_for_all:bool=True) -> list[dict[str, str]]:  
         params = {
             'peer_id': self.admin_id,
             'cmids': message_id,
             'delete_for_all': 1 if delete_for_all else 0,
         }
-        response = self.get_request("messages.delete", params, self.community_token)
+        response = self.post_request("messages.delete", params, self.community_token)
         return response
 
     def edit_message(self, message_id:int, message:str) -> int:
@@ -48,5 +48,5 @@ class ChatClient(BaseAPIClient):
             'cmid': message_id,
             'message': message,
         }
-        response = self.get_request("messages.edit", params, self.community_token)
+        response = self.post_request("messages.edit", params, self.community_token)
         return response
