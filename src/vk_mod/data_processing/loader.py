@@ -18,20 +18,4 @@ def load_dataset(path:Path, sample_limit:int=-1, quiet:bool=False) -> pd.DataFra
     if not quiet and sample_limit > len(df):
         print(f"dataset only have {len(df)} records, but requered {sample_limit}")
     sample_limit = min(sample_limit, len(df))
-    if sample_limit > 0: return df.sample(sample_limit, random_state=SEED)
-    print(f"{sample_limit} records succesfully loaded.")
-    return df
-
-def _parse_txt_data(path:Path) -> pd.DataFrame:
-    data_list:list[tuple[str, int, int, int, int]] = []
-    with path.open(encoding="utf-8") as file:
-        for line in file:
-            labels:str = line.split(maxsplit=1)[0]
-            text:str = line[len(labels)+1:].strip()
-            label_list:list[str] = labels.split(",")
-            labels_masks:list[int] = [1 if "__label__NORMAL" in label_list else 0.,
-                    1. if "__label__INSULT" in label_list else 0.,
-                    1. if "__label__THREAT" in label_list else 0.,
-                    1. if "__label__OBSCENITY" in label_list else 0.]
-            data_list.append((text, *labels_masks))
-    return pd.DataFrame(data_list, columns=["text", "normal", "insult", "threat", "obscenity"])
+    return df.sample(sample_limit, random_state=SEED) if sample_limit > 0 else df
