@@ -1,5 +1,5 @@
-from keras import layers, Model, saving
 import tensorflow as tf
+from keras import layers, Model, saving, applications
 
 
 @saving.register_keras_serializable()
@@ -12,7 +12,7 @@ class ImageBranch(Model):
             **kwargs: Additional keyword arguments for the base Model initialization.
         """
         super().__init__(**kwargs)
-        self.base_model = tf.keras.applications.EfficientNetB0(
+        self.base_model = applications.EfficientNetB0(
             include_top=False,
             weights='imagenet',
             input_shape=(224, 224, 3)

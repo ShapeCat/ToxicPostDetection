@@ -1,10 +1,10 @@
-from keras import layers, optimizers, Model, saving, callbacks
 import tensorflow as tf
+from pandas import DataFrame
+from keras import layers, optimizers, Model, saving, callbacks
 from .text_branch import TextBranch
 from .image_branch import ImageBranch
 from ..data import DatasetGenerator
 from ..preprocessing import ImagePreprocessor, TextPreprocessor
-import pandas as pd
 
 
 @saving.register_keras_serializable()
@@ -91,8 +91,8 @@ class ToxicClassificator(Model):
     
 
 def train_model(
-    train_df: pd.DataFrame, 
-    val_df: pd.DataFrame, 
+    train_df: DataFrame, 
+    val_df: DataFrame, 
     images_dir: str, 
     epochs: int = 10, 
     patience: int = 5, 
@@ -180,7 +180,7 @@ def predict_from_url(model: ToxicClassificator, text: str, image_path: str) -> f
     })[0][0]
 
 
-def evaluate_data_combinations(model:ToxicClassificator, validation_Data:pd.DataFrame, images_dir:str) -> None:
+def evaluate_data_combinations(model:ToxicClassificator, validation_Data:DataFrame, images_dir:str) -> None:
     """
     Evaluate and prints the model on all possible data combinations
     Args:

@@ -1,5 +1,4 @@
 import pytest
-import requests
 from .exceptions import VKAPIError
 from .base_client import BaseAPIClient
 

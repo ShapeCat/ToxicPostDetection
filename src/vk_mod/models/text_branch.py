@@ -1,6 +1,7 @@
-from keras import layers, Model, saving
 import tensorflow as tf
-import numpy as np
+from keras import layers, Model, saving
+from numpy import ndarray
+
 
 @saving.register_keras_serializable()
 class TextBranch(Model):
@@ -31,7 +32,7 @@ class TextBranch(Model):
         self.bidirectional_gru: layers.Bidirectional = layers.Bidirectional(layers.GRU(64, return_sequences=False))
         self.dropout: layers.Dropout = layers.Dropout(0.3)
     
-    def call(self, inputs:tf.Tensor|np.ndarray) -> tf.Tensor:
+    def call(self, inputs:tf.Tensor|ndarray) -> tf.Tensor:
         """
         Processes the input text data through the model layers.
 

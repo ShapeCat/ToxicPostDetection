@@ -1,10 +1,10 @@
 import tensorflow as tf
-import pandas as pd
+from pandas import DataFrame
 from ..preprocessing import TextPreprocessor, ImagePreprocessor
 
 
 class DatasetGenerator:
-    def __init__(self, df:pd.DataFrame, text_preprocessor:TextPreprocessor, image_prerocesor:ImagePreprocessor, batch_size:int=32) -> None:
+    def __init__(self, df:DataFrame, text_preprocessor:TextPreprocessor, image_prerocesor:ImagePreprocessor, batch_size:int=32) -> None:
         """
         Constructor for Dataset class
 

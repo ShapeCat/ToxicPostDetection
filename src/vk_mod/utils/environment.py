@@ -1,5 +1,5 @@
-from dotenv import dotenv_values
 from typing import overload
+from dotenv import dotenv_values
 
 
 @overload

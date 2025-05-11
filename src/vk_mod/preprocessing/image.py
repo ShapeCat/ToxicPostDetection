@@ -5,7 +5,6 @@ from keras import applications
 from pathlib import Path
 
 
-
 class ImagePreprocessor:
     def __init__(self, image_dir:str|Path, img_size:tuple[int, int]=(224, 224)) -> None:  
         """
