@@ -1,4 +1,3 @@
-import pytest
 from environment import load_env
 
 
