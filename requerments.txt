@@ -6,10 +6,7 @@ keras>=3.9.2
 nltk>=3.9.1
 tqdm>=4.67.1
 scikit-learn>=1.6.1
-detoxify>=0.5.2
 ipython>=8.36.0
-num2words>0.5.14
-torch>=2.7.0
 transformers>=4.51.3
 python-dotenv>=1.1.0
 vk_api>=11.9.9
