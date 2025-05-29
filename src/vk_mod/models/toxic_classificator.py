@@ -195,7 +195,7 @@ def evaluate_data_combinations(model:ToxicClassificator, validation_Data:DataFra
     image_preprocessor = ImagePreprocessor(images_dir)
     
     has_text = validation_Data['text'].apply(lambda x: len(str(x).strip()) > 0)
-    has_image = validation_Data['image_path'].apply(lambda x: len(str(x).strip()) > 0)
+    has_image = validation_Data['image_name'].apply(lambda x: len(str(x).strip()) > 0)
     
     subgroups = {
         'Только Текст': validation_Data[has_text & ~has_image],
