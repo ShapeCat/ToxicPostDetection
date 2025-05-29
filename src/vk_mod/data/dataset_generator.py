@@ -49,11 +49,11 @@ class DatasetGenerator:
         """
         for _, row in self.df.iterrows():
             text = self.text_preprocessor.clean(row['text'])
-            image = self.image_prerocesor.load_from_file(row['image_path'])
+            image = self.image_prerocesor.load_from_file(row['image_name'])
             yield (
                 {
                     'text_input': text,
                     'image_input': image
                 },
-                row['toxic']
+                row['blocked']
             )
