@@ -54,9 +54,9 @@ def load_env(value_name:str, default_value:float|None=None) -> float|None:
         float|None: Loaded value or None if default_value is None.
     """
     ... # pragma: no cover
-def load_env(value_name: str, default_value: bool|int|str|float|None = None) -> bool|int|str|float|None:
+def load_env(value_name: str, default_value: bool|int|str|float|None = None, env_path:str = ".env") -> bool|int|str|float|None:
     try:
-        env = dotenv_values("../.env")
+        env = dotenv_values(env_path)
         value = env.get(value_name)
         if value is None:
             return default_value
