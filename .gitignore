@@ -50,7 +50,6 @@ coverage.xml
 docs/_build/
 Links.md
 .env
-pretrained_models
 
 # Datasets
 /data
