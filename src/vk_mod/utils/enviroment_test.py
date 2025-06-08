@@ -1,106 +1,154 @@
-from environment import load_env
+import pytest
+from environment import load_config, NoOptionError, NoSectionError
 
 
-def test_load_env_read_string_return_int(mocker):  
+TEST_CONFIG = """
+[section]
+str_value = Строка
+int_value = 4
+float_value = 4.44
+bool_value = true
+"""
+
+
+@pytest.fixture
+def temp_config(tmp_path):
     """
-    Test that load_env will convert a string from the .env file into an int.
+    A fixture to create a temporary configuration file.
 
-    GIVEN: a .env file with a string value
-    WHEN:  load_env is called with the name of the value and a default value
-    THEN:  the result is an int with the same value as the string
-    """
-    
-    mock_env_file = {"MAX_RETRIES": "5"}
-    mocker.patch("environment.dotenv_values", return_value=mock_env_file)
-    
-    result = load_env("MAX_RETRIES", 0)
-    assert result == 5
-    assert isinstance(result, int)
+    The fixture returns a function that takes the content of the configuration file
+    as an argument and returns the path to the created file.
 
-def test_load_env_read_string_return_bool(mocker):
-    """
-    Test that load_env will convert various string representations of truthy values to boolean True.
+    Args:
+        tmp_path (Path): The path to the temporary directory.
 
-    GIVEN: a .env file containing string representations of truthy boolean values
-    WHEN:  load_env is called with the name of the value and a default boolean value
-    THEN:  the result is True for all the truthy string representations
+    Returns:
+        generate_ini_file (function): A function that generates a temporary configuration file.
     """
-    mock_env_file = {
-        "BOOL_1": "1",
-        "BOOL_YES": "yes",
-        "BOOL_ON": "on",
-        "BOOL_TRUE": "true"
-    }
-    mocker.patch("environment.dotenv_values", return_value=mock_env_file)
-    
-    assert load_env("BOOL_1", False) is True
-    assert load_env("BOOL_YES", False) is True
-    assert load_env("BOOL_ON", False) is True
-    assert load_env("BOOL_TRUE", False) is True
+    def generate_ini_file(content):
+        """
+        Generate a temporary configuration file.
 
-def test_load_env_read_string_return_float(mocker):
-    """
-    Test that load_env will convert a string from the .env file into a float.
+        Args:
+            content (str): The content of the configuration file.
 
-    GIVEN: a .env file with a string value
-    WHEN:  load_env is called with the name of the value and a default float value
-    THEN:  the result is a float with the same value as the string
-    """
-    mock_env_file = {"RATING": "4.5"}
-    mocker.patch("environment.dotenv_values", return_value=mock_env_file)
-    
-    result = load_env("RATING", 0.0)
-    assert result == 4.5
-    assert isinstance(result, float)
+        Returns:
+            str: The path to the created file.
+        """
+        ini_file_path = tmp_path / "config.ini"
+        ini_file_path.write_text(content)
+        return str(ini_file_path)
+    return generate_ini_file
 
-def test_load_env_read_invalid_return_default(mocker):
-    """
-    Test that load_env will return the default value if the value from the .env file cannot be converted to the requested type.
 
-    GIVEN: a .env file with an invalid value
-    WHEN:  load_env is called with the name of the value and a default value
-    THEN:  the result is the default value
+@pytest.mark.parametrize("return_type, expected", [
+    ("str", "Строка"),
+    ("bool", True),
+])
+def test_load_str_value_exists(tmp_config, return_type, expected):
     """
-    mock_env_file = {"PORT": "invalid"}
-    mocker.patch("environment.dotenv_values", return_value=mock_env_file)
-    
-    result = load_env("PORT", 8080)
-    assert result == 8080 
+    GIVEN a configuration file with a section and a key with string value
+    WHEN we call load_env with the section name, the key name and the return_type set to "str" or "bool"
+    THEN the function returns the value of the key with corresponding return_type
+    """
+    ini_path = tmp_config(TEST_CONFIG)
+    assert load_config("section", "str_value", file_path=ini_path, return_type=return_type) == expected
 
-def test_load_env_read_file(mocker):
-    """
-    Test that load_env will read the .env file if it exists and not mock it out.
 
-    GIVEN: a valid .env file
-    WHEN:  load_env is called
-    THEN:  the .env file is read and the expected value is returned
+@pytest.mark.parametrize("return_type, expected", [
+    ("bool", True),
+    ("str", "true"),
+])
+def test_load_bool_value_exists(tmp_config, return_type, expected):
     """
-    mock = mocker.patch("environment.dotenv_values")
-    load_env("VAR", "default")
-    mock.assert_called_once_with("../.env") 
+    GIVEN a configuration file with a section and a key with boolean value
+    WHEN we call load_env with the section name, the key name and the return_type set to "bool" or "str"
+    THEN the function returns the value of the key with corresponding return_type
+    """
+    ini_path = tmp_config(TEST_CONFIG)
+    assert load_config("section", "bool_value", file_path=ini_path, return_type=return_type) == expected
 
-def test_load_env_missing_value_return_default(mocker):
-    """
-    Test that load_env will return the default value if the value is not present in the .env file.
 
-    GIVEN: a .env file with no value
-    WHEN:  load_env is called with the name of the value and a default value
-    THEN:  the result is the default value
+@pytest.mark.parametrize("return_type, expected", [
+    ("int", 4),
+    ("str", "4"), 
+    ("bool", True), 
+])
+def test_load_int_value_exists(tmp_config, return_type, expected):
     """
-    mock_env_file = {}
-    mocker.patch("environment.dotenv_values", return_value=mock_env_file)
-    result = load_env("MISSING_VAR", "default")
-    assert result == "default"
+    GIVEN a configuration file with a section and a key with integer value
+    WHEN we call load_env with the section name, the key name and the return_type set to "int", "str", or "bool"
+    THEN the function returns the value of the key with the corresponding return_type
+    """
+    ini_path = tmp_config(TEST_CONFIG)
+    assert load_config("section", "int_value", file_path=ini_path, return_type=return_type) == expected
 
-def test_load_env_missing_value_no_default_return_none(mocker):
-    """
-    Test that load_env will return None if the value is not present in the .env file and no default value is provided.
 
-    GIVEN: a .env file with no value
-    WHEN:  load_env is called with the name of the value and no default value
-    THEN:  the result is None
+@pytest.mark.parametrize("return_type, expected", [
+    ("float", 4.44),
+    ("str", "4.44"),
+    ("bool", True),
+])
+def test_load_float_value_exists(tmp_config, return_type, expected):
     """
-    mock_env_file = {}
-    mocker.patch("environment.dotenv_values", return_value=mock_env_file)
-    result = load_env("MISSING_VAR")
-    assert result is None
+    GIVEN a configuration file with a section and a key with float value
+    WHEN we call load_env with the section name, the key name and the return_type set to "float", "str", or "bool"
+    THEN the function returns the value of the key with the corresponding return_type
+    """
+    ini_path = tmp_config(TEST_CONFIG)
+    assert load_config("section", "float_value", file_path=ini_path, return_type=return_type) == expected
+
+
+def test_file_not_found():
+    """
+    GIVEN a non-existent file path
+    WHEN we call load_env with this file path
+    THEN the function raises FileNotFoundError
+    AND if default_value is specified, the function returns the default value
+    """
+    with pytest.raises(FileNotFoundError):
+        load_config("section", "str_value", file_path="missing.ini")
+    assert load_config("section", "str_value", file_path="missing.ini", default_value="default") == "default"
+
+
+def test_missing_section(tmp_config):
+    """
+    GIVEN a configuration file without a specified section
+    WHEN we call load_env with the section name and a key
+    THEN the function raises NoSectionError
+    AND if default_value is specified, the function returns the default value
+    """
+    ini_path = tmp_config(TEST_CONFIG)
+    with pytest.raises(NoSectionError):
+        load_config("missing_section", "str_value", file_path=ini_path)
+    assert load_config("missing_section", "str_value", file_path=ini_path, default_value="default") == "default"
+
+
+def test_missing_key(tmp_config):
+    """
+    GIVEN a configuration file without a specified key
+    WHEN we call load_env with the section name and the missing key
+    THEN the function raises NoOptionError
+    AND if default_value is specified, the function returns the default value
+    """
+    ini_path = tmp_config(TEST_CONFIG)
+    with pytest.raises(NoOptionError):
+        load_config("section", "missing_key", file_path=ini_path)
+    assert load_config("section", "missing_key", file_path=ini_path, default_value="default") == "default"
+
+
+@pytest.mark.parametrize("key, return_type", [
+    ("str_value", "int"), 
+    ("str_value", 'float'),
+])
+def test_conversion_error(tmp_config, key, return_type):
+    """
+    GIVEN a configuration file with a key that cannot be converted to the specified return_type
+    WHEN we call load_env with the section name, the key name and the return_type
+    THEN the function raises ValueError
+    AND if default_value is specified, the function returns the default value
+    """
+    ini_path = tmp_config(TEST_CONFIG)
+    with pytest.raises(ValueError):
+        load_config("section", key, file_path=ini_path, return_type=return_type)
+    assert load_config("section", key, file_path=ini_path, return_type=return_type, default_value="default") == "default"
