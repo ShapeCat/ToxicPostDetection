@@ -21,6 +21,6 @@ class VK_API:
                 admin_id = int(admin_id)
             except (ValueError, TypeError):
                 raise ValueError("admin_id must be convertible to integer")
-        self.wall = WallClient(access_token, community_token)
+        self.wall = WallClient(community_token, access_token)
         self.chat = ChatClient(community_token, admin_id)
     
