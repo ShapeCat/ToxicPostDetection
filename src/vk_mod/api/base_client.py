@@ -4,7 +4,7 @@ from .exceptions import VKAPIError
 
 class BaseAPIClient:
     url = 'https://api.vk.com/method/'
-    api_version = 5.199
+    api_version = "5.199"
 
     def __init__(self, community_token:str) -> None:
         """
@@ -17,7 +17,7 @@ class BaseAPIClient:
         """
         self.community_token = community_token
 
-    def post_request(self, method:str, params:dict[str], access_token:str|None=None) -> dict[str, str]:
+    def post_request(self, method:str, params:dict[str, str], access_token:None|str=None) -> dict[str, str]:
         """
         Make a POST request to VK API method.
 
