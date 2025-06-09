@@ -6,7 +6,7 @@ class BaseAPIClient:
     url = 'https://api.vk.com/method/'
     api_version = 5.199
 
-    def __init__(self, access_token:str, community_token:str, service_key:str) -> None:
+    def __init__(self, community_token:str) -> None:
         """
         Initialize a BaseAPIClient instance.
 
@@ -15,9 +15,7 @@ class BaseAPIClient:
             community_token (str): The community token for the VK API.
             service_key (str): The service key for the VK API.
         """
-        self.access_token = access_token 
         self.community_token = community_token
-        self.service_key = service_key
 
     def post_request(self, method:str, params:dict[str], access_token:str|None=None) -> dict[str, str]:
         """
@@ -35,7 +33,7 @@ class BaseAPIClient:
             VKAPIError: If the VK API returns an error.
         """
         params.update({
-            'access_token': access_token if access_token  else self.access_token,
+            'access_token': access_token if access_token  else self.community_token,
             'v': self.api_version
         })
         
@@ -64,7 +62,7 @@ class BaseAPIClient:
             VKAPIError: If the VK API returns an error.
         """
         params.update({
-            'access_token': access_token if access_token  else self.access_token,
+            'access_token': access_token if access_token  else self.community_token,
             'v': self.api_version
         })
         

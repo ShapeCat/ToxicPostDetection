@@ -14,13 +14,11 @@ def test_vk_api_init_success():
     """
     access_token = "test_access_token"
     community_token = "test_community_token"
-    service_key = "test_service_key"
     admin_id = 12345
 
     vk_api = VK_API(
         access_token=access_token,
         community_token=community_token,
-        service_key=service_key,
         admin_id=admin_id
         )
     assert isinstance(vk_api.wall, WallClient)
@@ -37,12 +35,10 @@ def test_vk_api_init_string_admin_id_success():
     """
     access_token = "test_access_token"
     community_token = "test_community_token"
-    service_key = "test_service_key"
     admin_id = "12345"
 
     vk_api = VK_API(access_token=access_token,
                     community_token=community_token,
-                    service_key=service_key,
                     admin_id=admin_id)
     assert vk_api.chat.admin_id == 12345
 
@@ -63,6 +59,5 @@ def test_vk_api_init_invalid_admin_id_exception(admin_id):
     with pytest.raises(ValueError) as exc_info:
         VK_API(access_token=access_token,
                community_token=community_token,
-               service_key=service_key,
                admin_id=admin_id)
     assert "admin_id must be convertible to integer" in str(exc_info.value)
