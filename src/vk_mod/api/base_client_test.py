@@ -12,9 +12,7 @@ def api_client_fixture():
         BaseAPIClient: An instance of BaseAPIClient initialized with test access, community, and service keys.
     """
     return BaseAPIClient(
-        access_token="test_access_token",
         community_token="test_community_token",
-        service_key="test_service_key"
     )
 
 
@@ -40,7 +38,7 @@ def test_post_request_success(api_client_fixture, requests_mock):
     response = api_client_fixture.post_request(method, params)
     assert response == expected_response["response"]
     assert requests_mock.last_request.url.startswith(url)
-    assert "access_token=test_access_token" in requests_mock.last_request.url
+    assert "access_token=test_community_token" in requests_mock.last_request.url
     assert "v=5.199" in requests_mock.last_request.url
 
 
@@ -66,7 +64,7 @@ def test_get_request_success(api_client_fixture, requests_mock):
     response = api_client_fixture.get_request(method, params)
     assert response == expected_response["response"]
     assert requests_mock.last_request.url.startswith(url)
-    assert "access_token=test_access_token" in requests_mock.last_request.url
+    assert "access_token=test_community_token" in requests_mock.last_request.url
     assert "v=5.199" in requests_mock.last_request.url
 
 

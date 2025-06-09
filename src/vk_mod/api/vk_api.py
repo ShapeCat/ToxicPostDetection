@@ -3,7 +3,7 @@ from .chat_client import ChatClient
 
 
 class VK_API:
-    def __init__(self, access_token:str, community_token:str, service_key:str, admin_id:int|str):
+    def __init__(self, community_token:str, access_token:str, admin_id:int|str):
         """
         Initialize a VK_API instance.
 
@@ -21,6 +21,6 @@ class VK_API:
                 admin_id = int(admin_id)
             except (ValueError, TypeError):
                 raise ValueError("admin_id must be convertible to integer")
-        self.wall = WallClient(access_token, community_token, service_key)
-        self.chat = ChatClient(access_token, community_token, service_key, admin_id)
+        self.wall = WallClient(access_token, community_token)
+        self.chat = ChatClient(community_token, admin_id)
     

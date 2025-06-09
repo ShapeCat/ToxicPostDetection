@@ -3,7 +3,7 @@ from .base_client import BaseAPIClient
 
 
 class ChatClient(BaseAPIClient):
-    def __init__(self, access_token:str, community_token:str, service_key:str, admin_id:int):
+    def __init__(self, community_token:str, admin_id:int):
         """
         Initialize a ChatClient instance.
 
@@ -13,7 +13,7 @@ class ChatClient(BaseAPIClient):
             service_key (str): The service key for the VK API.
             admin_id (int): The administrator ID for the chat client.
         """
-        super().__init__(access_token, community_token, service_key)
+        super().__init__(community_token)
         self.admin_id = admin_id
 
     def send_message_to_admin(self, message:str) -> int:
@@ -32,7 +32,7 @@ class ChatClient(BaseAPIClient):
             'random_id': randint(1, 10*5)
 
         }
-        response = self.post_request("messages.send", params, self.community_token)
+        response = self.post_request("messages.send", params)
         return response
 
     def get_message_by_id(self, message_id:int) -> list[dict[str, str]]:
@@ -52,7 +52,7 @@ class ChatClient(BaseAPIClient):
             'peer_id': self.admin_id,
             'cmids': message_id,
         }
-        response = self.get_request("messages.getById", params, self.community_token)
+        response = self.get_request("messages.getById", params)
         return response['items']
 
     def get_all_chat_messages(self, count:int=200) -> list[dict[str, str]]:
@@ -116,5 +116,5 @@ class ChatClient(BaseAPIClient):
             'cmid': message_id,
             'message': message,
         }
-        response = self.post_request("messages.edit", params, self.community_token)
+        response = self.post_request("messages.edit", params)
         return response

@@ -12,9 +12,7 @@ def chat_client():
         ChatClient: A ChatClient instance with test access, community, and service keys.
     """
     return ChatClient(
-        access_token="access_token",
         community_token="community_token",
-        service_key="service_key",
         admin_id=12345
     )
 

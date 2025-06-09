@@ -1,73 +1,57 @@
-from typing import overload
-from dotenv import dotenv_values
+from typing import Any, Literal
+from configparser import ConfigParser, NoOptionError, NoSectionError
+from pathlib import Path
 
 
-@overload
-def load_env(value_name:str, default_value:bool|None=None) -> bool|None: 
+def load_config(section:str, key:str, file_path:str|Path = "config.ini", default_value:Any = None, return_type:Literal["str", "int", "float", "bool"] = "str") -> Any:
     """
-    Load value from .env file by name and convert it to bool.
+    Load a configuration value from a file.
 
     Args:
-        value_name (str): Name of the value to load.
-        default_value (bool|None, optional): Default value if there is no such value in .env file or if the value is not a bool. Defaults to None.
+        section (str): The section of the configuration file to read from.
+        key (str): The key of the configuration value to read.
+        file_path (str|Path, optional): The path to the configuration file. Defaults to "config.ini".
+        default_value (Any, optional): The default value to return if the key is not found or the file is not found. Defaults to None.
+        return_type (Literal["str", "int", "float", "bool"], optional): The type to convert the read value to. Defaults to "str".
+
+    Raises:
+        FileNotFoundError: If the file is not found and no default value is specified.
+        ValueError: If the key is not found, the value cannot be converted to the specified type, or the file cannot be read.
+        NoOptionError: If the key is not found in the specified section.
+        NoSectionError: If the section is not found in the file.
 
     Returns:
-        bool|None: Loaded value or None if default_value is None.
+        Any: The read value converted to the specified type or the default value if the key is not found or the file is not found.
     """
-    ... # pragma: no cover
-@overload
-def load_env(value_name:str, default_value:int|None=None) -> int|None: 
-    """
-    Load value from .env file by name and convert it to int.
-
-    Args:
-        value_name (str): Name of the value to load.
-        default_value (int|None, optional): Default value if there is no such value in .env file or if the value is not an int. Defaults to None.
-
-    Returns:
-        int|None: Loaded value or None if default_value is None.
-    """
-    ... # pragma: no cover
-@overload
-def load_env(value_name:str, default_value:str|None=None) -> str|None: 
-    """
-    Load value from .env file by name and return it as a string.
-
-    Args:
-        value_name (str): Name of the value to load.
-        default_value (str|None, optional): Default value if there is no such value in .env file. Defaults to None.
-
-    Returns:
-        str|None: Loaded value or None if default_value is None.
-    """
-    ... # pragma: no cover
-@overload
-def load_env(value_name:str, default_value:float|None=None) -> float|None: 
-    """
-    Load value from .env file by name and convert it to float.
-
-    Args:
-        value_name (str): Name of the value to load.
-        default_value (float|None, optional): Default value if there is no such value in .env file or if the value is not a float. Defaults to None.
-
-    Returns:
-        float|None: Loaded value or None if default_value is None.
-    """
-    ... # pragma: no cover
-def load_env(value_name: str, default_value: bool|int|str|float|None = None, env_path:str = ".env") -> bool|int|str|float|None:
+    if isinstance(file_path, str):
+        file_path = Path(file_path)
+    if not file_path.exists():
+        if default_value is None:
+            raise FileNotFoundError(f"Config file not found: {file_path}")
+        return default_value
+    
     try:
-        env = dotenv_values(env_path)
-        value = env.get(value_name)
+        parser = ConfigParser()
+        parser.read(file_path)
+        value = parser.get(section, key)
         if value is None:
+            if default_value is None:
+                raise ValueError(f"Key {key} not found in {file_path}")
             return default_value
         
-        if isinstance(default_value, bool):
-            return value.lower() in ("true", "1", "yes", "on")
-        elif isinstance(default_value, int):
-            return int(value)
-        elif isinstance(default_value, float):
+        if return_type is "bool":
+            return bool(value)      
+        if return_type is "int":
+            return int(value)     
+        if return_type is "float":
             return float(value)
-        return value 
-    except Exception as e:
-        print(f"There is an error while reading .env file: {e}")
+        return str(value)
+    
+    except (NoOptionError, NoSectionError):
+        if default_value is None:
+            raise
+        return default_value
+    except ValueError as e: 
+        if default_value is None:
+            raise
         return default_value
