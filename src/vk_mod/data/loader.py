@@ -19,8 +19,11 @@ def load_dataset(path:Path|list[Path], sample_limit:int=-1) -> pd.DataFrame:
     df = pd.DataFrame()
     sample_limit = int(sample_limit//len(path)) if sample_limit > 0 else sample_limit
     for p in path:
-        df = pd.concat([df, _load_dataset(p, sample_limit)], ignore_index=True)
-    return df.fillna("")
+        df = pd.concat([df, _load_dataset(p, sample_limit)], ignore_index=True)   
+    df['blocked'] = df['blocked'].astype(int) 
+    df['text'] = df['text'].astype(str)
+    df['image_name'] = df['image_name'].astype(str)
+    return df.fillna("").replace("nan", "")
 
 
 def _load_dataset(path:Path, sample_limit:int=-1):
@@ -48,8 +51,7 @@ def _load_dataset(path:Path, sample_limit:int=-1):
     
     df = pd.read_csv(path)
     if ('blocked' not in df.columns):
-        raise ValueError("CSV must contain 'blocked' column")   
-    df['blocked'] = df['blocked'].astype(int) 
+        raise ValueError("CSV must contain 'blocked' column")  
 
     sample_limit = min(sample_limit, len(df))
     return df.sample(sample_limit, random_state=SEED) if sample_limit > 0 else df
