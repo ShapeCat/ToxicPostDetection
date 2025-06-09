@@ -1,5 +1,6 @@
 from .wall_client import WallClient
 from .chat_client import ChatClient
+from .longpoll_client import LongPollClient
 
 
 class VK_API:
@@ -23,4 +24,4 @@ class VK_API:
                 raise ValueError("admin_id must be convertible to integer")
         self.wall = WallClient(community_token, access_token)
         self.chat = ChatClient(community_token, admin_id)
-    
+        self.longpoll = LongPollClient(community_token)
