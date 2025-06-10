@@ -96,6 +96,7 @@ def train_model(
     images_dir: str, 
     epochs: int = 10, 
     patience: int = 5, 
+    min_delta: float = 0.1,
     save_path: str | None = None
 ) -> ToxicClassificator:
     """
@@ -130,7 +131,7 @@ def train_model(
         validation_data=val_ds,
         epochs=epochs,
         callbacks=[
-            callbacks.EarlyStopping(patience=patience, restore_best_weights=True),
+            callbacks.EarlyStopping(patience=patience, restore_best_weights=True, min_delta=min_delta), # type: ignore
             callbacks.ReduceLROnPlateau(factor=0.5, patience=1),
         ]
     )
