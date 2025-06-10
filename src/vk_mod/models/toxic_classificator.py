@@ -1,96 +1,28 @@
 import tensorflow as tf
 from pandas import DataFrame
-from keras import layers, optimizers, Model, saving, callbacks
-from .text_branch import TextBranch
-from .image_branch import ImageBranch
+from keras import layers, optimizers, callbacks
+from .text import TextBranch, TextBranchUSE
+from .image import ImageBranch
 from ..data import DatasetGenerator
 from ..preprocessing import ImagePreprocessor, TextPreprocessor
 
 
-@saving.register_keras_serializable()
-class ToxicClassificator(Model):
-    def __init__(self, text_branch:TextBranch, image_branch:ImageBranch, **kwargs) -> None:
-        """
-        Initialize the ToxicClassifier.
+def build_model():
+    text_input = tf.keras.Input(shape=(), dtype=tf.string, name='text_input')
+    image_input = tf.keras.Input(shape=(224, 224, 3), dtype=tf.float32, name='image_input')
+    text_branch = TextBranchUSE()(text_input)
+    image_branch = ImageBranch()(image_input)
+    concat = layers.Concatenate(name='concatination')([text_branch, image_branch])
+    classifier = layers.Dense(1, activation='sigmoid', dtype=tf.float32, name='classifier')(concat)
+    model = tf.keras.Model(inputs=[text_input, image_input], outputs=classifier)  
+    model.compile(
+        optimizer=optimizers.Adam(learning_rate=1e-4),
+        loss='binary_crossentropy',
+        metrics=['accuracy']
+    )
+    return model
 
-        Args:
-            text_branch (TextBranch): Instance of the text text branch for text data processing.
-            image_branch (ImageBranch): Instance of the image branch for visual data processing.
-            **kwargs: Additional keyword arguments for the base Model initialization.
-
-        Returns:
-            None
-        """
-        super().__init__(**kwargs)
-        self.text_branch: TextBranch = text_branch
-        self.image_branch: ImageBranch = image_branch
-        self.concat: layers.Concatenate = layers.Concatenate()
-        self.classifier: layers.Dense = layers.Dense(1, activation='sigmoid', dtype='float32')
-        
-    def call(self, inputs:dict[str, tf.Tensor]) -> tf.Tensor:
-        """
-        Perform a forward pass of the ToxicClassifier.
-
-        Args:
-            inputs (dict[str, tf.Tensor]): A dictionary containing 'text_input' and 'image_input' tensors.
-
-        Returns:
-            tf.Tensor: The output tensor after combining text and image features.
-        """
-        text_features: tf.Tensor = self.text_branch(inputs['text_input'])
-        image_features: tf.Tensor = self.image_branch(inputs['image_input'])
-        combined: tf.Tensor = self.concat([text_features, image_features])
-        return self.classifier(combined)
-    
-    def compile_model(self) -> None:
-        """
-        Compile the ToxicClassifier.
-
-        This method configures the model with an optimizer, loss function, and metrics for evaluation.
-
-        Returns:
-            None
-        """
-        super().compile(
-            optimizer=optimizers.AdamW(learning_rate=1e-4),
-            loss='binary_crossentropy',
-            metrics=['accuracy']
-        )
-        
-    def get_config(self) -> dict[str, any]:
-        """
-        Get the configuration of the ToxicClassifier.
-
-        This method serializes the text and image branches into the configuration dictionary.
-
-        Returns:
-            dict[str, any]: The configuration dictionary.
-        """
-        config = super().get_config()
-        config.update({
-            "text_branch": saving.serialize_keras_object(self.text_branch),  # type: ignore
-            "image_branch": saving.serialize_keras_object(self.image_branch)  # type: ignore
-        })
-        return config
-
-    @classmethod
-    def from_config(cls, config:dict[str, any]) -> 'ToxicClassificator':
-        """
-        Create an instance of ToxicClassifier from the given configuration.
-
-        Args:
-            config (dict[str, any]): A dictionary containing the configuration for the model.
-
-        Returns:
-            ToxicClassifier: An instance of ToxicClassifier with the specified configuration.
-        """
-        config = config.copy()
-        text_branch = saving.deserialize_keras_object(config.pop("text_branch"))
-        image_branch = saving.deserialize_keras_object(config.pop("image_branch"))
-        return cls(text_branch, image_branch, **config) 
-    
-
-def train_model(
+def build_and_train(
     train_df: DataFrame, 
     val_df: DataFrame, 
     images_dir: str, 
@@ -98,34 +30,12 @@ def train_model(
     patience: int = 5, 
     min_delta: float = 0.1,
     save_path: str | None = None
-) -> ToxicClassificator:
-    """
-    Train the ToxicClassifier with the provided datasets.
-
-    Args:
-        train_df (pd.DataFrame): DataFrame containing the training data.
-        val_df (pd.DataFrame): DataFrame containing the validation data.
-        images_dir (str): Directory containing the dataset images.
-        epochs (int, optional): Number of epochs to train the model. Defaults to 10.
-        patience (int, optional): Patience for early stopping. Defaults to 5.
-        save_path (str | None, optional): Path to save the model after training. Defaults to None.
-
-    Returns:
-        ToxicClassifier: Trained ToxicClassifier instance.
-    """
-    text_branch = TextBranch()
-    image_branch = ImageBranch()
-    model = ToxicClassificator(text_branch, image_branch)
-    
+):
+    model = build_model()
     text_preprocessor = TextPreprocessor()
     image_preprocessor = ImagePreprocessor(images_dir)
-    train_texts = train_df['text'].apply(text_preprocessor.clean).values
-    text_branch.vectorizer.adapt(tf.data.Dataset.from_tensor_slices(train_texts).batch(512))
-       
     train_ds = DatasetGenerator(train_df, text_preprocessor, image_preprocessor).create_dataset()
     val_ds = DatasetGenerator(val_df, text_preprocessor, image_preprocessor).create_dataset()
-    
-    model.compile_model()
     model.fit(
         train_ds,
         validation_data=val_ds,
@@ -138,10 +48,10 @@ def train_model(
 
     if save_path:
         model.save(save_path)
-    return model
+    return model    
 
 
-def predict_from_file(model: ToxicClassificator, text: str, image_path: str) -> float:
+def predict_from_file(model, text: str, image_path: str) -> float:
     """
     Predict the toxicity of a given text and image.
 
@@ -161,7 +71,7 @@ def predict_from_file(model: ToxicClassificator, text: str, image_path: str) -> 
     })[0][0]
 
 
-def predict_from_url(model: ToxicClassificator, text: str, image_path: str) -> float:
+def predict_from_url(model, text: str, image_path: str) -> float:
     """
     Predict the toxicity of a given text and image.
 
@@ -181,7 +91,7 @@ def predict_from_url(model: ToxicClassificator, text: str, image_path: str) -> f
     })[0][0]
 
 
-def evaluate_data_combinations(model:ToxicClassificator, validation_Data:DataFrame, images_dir:str) -> None:
+def evaluate_data_combinations(model, validation_Data:DataFrame, images_dir:str) -> None:
     """
     Evaluate and prints the model on all possible data combinations
     Args:
