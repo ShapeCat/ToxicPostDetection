@@ -3,6 +3,7 @@ from pandas import DataFrame
 from keras import layers, optimizers, Model, saving, callbacks
 from .text_branch import TextBranch
 from .image_branch import ImageBranch
+from .text_branch_use import TextBranchUSE
 from ..data import DatasetGenerator
 from ..preprocessing import ImagePreprocessor, TextPreprocessor
 
@@ -113,14 +114,14 @@ def train_model(
     Returns:
         ToxicClassifier: Trained ToxicClassifier instance.
     """
-    text_branch = TextBranch()
+    text_branch = TextBranchUSE()
     image_branch = ImageBranch()
     model = ToxicClassificator(text_branch, image_branch)
     
     text_preprocessor = TextPreprocessor()
     image_preprocessor = ImagePreprocessor(images_dir)
-    train_texts = train_df['text'].apply(text_preprocessor.clean).values
-    text_branch.vectorizer.adapt(tf.data.Dataset.from_tensor_slices(train_texts).batch(512))
+    train_texts = train_df['text']#.apply(text_preprocessor.clean).values
+    #text_branch.vectorizer.adapt(tf.data.Dataset.from_tensor_slices(train_texts).batch(512))
        
     train_ds = DatasetGenerator(train_df, text_preprocessor, image_preprocessor).create_dataset()
     val_ds = DatasetGenerator(val_df, text_preprocessor, image_preprocessor).create_dataset()
