@@ -105,9 +105,8 @@ def build_model():
         metrics=['accuracy']
     )
     return model
- 
 
-def train_model(
+def build_and_train(
     train_df: DataFrame, 
     val_df: DataFrame, 
     images_dir: str, 
@@ -115,34 +114,12 @@ def train_model(
     patience: int = 5, 
     min_delta: float = 0.1,
     save_path: str | None = None
-) -> ToxicClassificator:
-    """
-    Train the ToxicClassifier with the provided datasets.
-
-    Args:
-        train_df (pd.DataFrame): DataFrame containing the training data.
-        val_df (pd.DataFrame): DataFrame containing the validation data.
-        images_dir (str): Directory containing the dataset images.
-        epochs (int, optional): Number of epochs to train the model. Defaults to 10.
-        patience (int, optional): Patience for early stopping. Defaults to 5.
-        save_path (str | None, optional): Path to save the model after training. Defaults to None.
-
-    Returns:
-        ToxicClassifier: Trained ToxicClassifier instance.
-    """
-    text_branch = TextBranchUSE()
-    image_branch = ImageBranch()
-    model = ToxicClassificator(text_branch, image_branch)
-    
+):
+    model = build_model()
     text_preprocessor = TextPreprocessor()
     image_preprocessor = ImagePreprocessor(images_dir)
-    train_texts = train_df['text']#.apply(text_preprocessor.clean).values
-    #text_branch.vectorizer.adapt(tf.data.Dataset.from_tensor_slices(train_texts).batch(512))
-       
     train_ds = DatasetGenerator(train_df, text_preprocessor, image_preprocessor).create_dataset()
     val_ds = DatasetGenerator(val_df, text_preprocessor, image_preprocessor).create_dataset()
-    
-    model.compile_model()
     model.fit(
         train_ds,
         validation_data=val_ds,
@@ -155,7 +132,7 @@ def train_model(
 
     if save_path:
         model.save(save_path)
-    return model
+    return model    
 
 
 def predict_from_file(model: ToxicClassificator, text: str, image_path: str) -> float:
