@@ -1,9 +1,9 @@
 import tensorflow as tf
 from pandas import DataFrame
 from keras import layers, optimizers, Model, saving, callbacks
-from .text_branch import TextBranch
-from .image_branch import ImageBranch
-from .text_branch_use import TextBranchUSE
+from .text.text_branch import TextBranch
+from .image.image_branch import ImageBranch
+from .text.text_branch_use import TextBranchUSE
 from ..data import DatasetGenerator
 from ..preprocessing import ImagePreprocessor, TextPreprocessor
 
