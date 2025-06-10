@@ -13,11 +13,12 @@ class TextBranch(Model):
         self.vectorizer: layers.TextVectorization = layers.TextVectorization(
             max_tokens=max_words,
             output_sequence_length=max_len,
-            output_mode='int'
+            output_mode='int',
+            name='vectorizer'
         )
-        self.embedding: layers.Embedding = layers.Embedding(max_words + 1, embedding_dim)
-        self.bidirectional_gru: layers.Bidirectional = layers.Bidirectional(layers.GRU(64, return_sequences=False))
-        self.dropout: layers.Dropout = layers.Dropout(0.3)
+        self.embedding: layers.Embedding = layers.Embedding(max_words + 1, embedding_dim, name='embedding')
+        self.bidirectional_gru: layers.Bidirectional = layers.Bidirectional(layers.GRU(64, return_sequences=False,), name='bidirectional_gru')
+        self.dropout: layers.Dropout = layers.Dropout(0.3, name='dropout')
     
     def call(self, inputs, training=None, mask=None):
         x:tf.Tensor = self.vectorizer(inputs)

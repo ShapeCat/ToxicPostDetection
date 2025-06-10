@@ -14,8 +14,9 @@ class TextBranchUSE(Model):
             model_url = "https://tfhub.dev/google/universal-sentence-encoder-multilingual/3"
         else:
             raise ValueError(f"Unknown encoder size: {encoder_size}")
-        self.embed = hub.KerasLayer(model_url, trainable=False) 
-        self.dense = layers.Dense(128, activation='relu')
+            
+        self.embed = hub.KerasLayer(model_url, trainable=False, name='embeding') 
+        self.dense = layers.Dense(128, activation='relu', name='feature_extractor')
         
     def call(self, inputs, training=None, mask=None):
         return self.dense(self.embed(inputs))

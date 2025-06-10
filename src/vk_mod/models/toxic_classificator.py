@@ -13,8 +13,8 @@ def build_model():
     image_input = tf.keras.Input(shape=(224, 224, 3), dtype=tf.float32, name='image_input')
     text_branch = TextBranchUSE()(text_input)
     image_branch = ImageBranch()(image_input)
-    concat = layers.Concatenate()([text_branch, image_branch])
-    classifier = layers.Dense(1, activation='sigmoid', dtype='float32')(concat)
+    concat = layers.Concatenate(name='concatination')([text_branch, image_branch])
+    classifier = layers.Dense(1, activation='sigmoid', dtype=tf.float32, name='classifier')(concat)
     model = tf.keras.Model(inputs=[text_input, image_input], outputs=classifier)  
     model.compile(
         optimizer=optimizers.Adam(learning_rate=1e-4),

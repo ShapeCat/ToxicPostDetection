@@ -11,9 +11,9 @@ class ImageBranch(Model):
             input_shape=(224, 224, 3)
         )
         self.base_model.trainable = False
-        self.pooling2d:layers.GlobalAveragePooling2D = layers.GlobalAveragePooling2D()
-        self.dense:layers.Dense = layers.Dense(128, activation='relu')
-        self.dropout:layers.Dropout = layers.Dropout(0.3)
+        self.pooling2d:layers.GlobalAveragePooling2D = layers.GlobalAveragePooling2D(name='pooling2d')
+        self.dense:layers.Dense = layers.Dense(128, activation='relu', name='feature_extractor')
+        self.dropout:layers.Dropout = layers.Dropout(0.3, name='dropout')
 
     def call(self, inputs, training=None, mask=None):
         x:tf.Tensor = self.base_model(inputs)
