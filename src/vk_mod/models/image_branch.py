@@ -2,7 +2,6 @@ import tensorflow as tf
 from keras import layers, Model, saving, applications
 
 
-@saving.register_keras_serializable()
 class ImageBranch(Model):
     def __init__(self, **kwargs) -> None:
         """

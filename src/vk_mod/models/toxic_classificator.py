@@ -8,7 +8,6 @@ from ..data import DatasetGenerator
 from ..preprocessing import ImagePreprocessor, TextPreprocessor
 
 
-@saving.register_keras_serializable()
 class ToxicClassificator(Model):
     def __init__(self, text_branch:TextBranch, image_branch:ImageBranch, **kwargs) -> None:
         """
@@ -53,7 +52,7 @@ class ToxicClassificator(Model):
             None
         """
         super().compile(
-            optimizer=optimizers.AdamW(learning_rate=1e-4),
+            optimizer=optimizers.Adam(learning_rate=1e-4),
             loss='binary_crossentropy',
             metrics=['accuracy']
         )
