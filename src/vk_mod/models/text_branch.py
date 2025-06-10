@@ -2,7 +2,7 @@ import tensorflow as tf
 from keras import layers, Model, saving
 from numpy import ndarray
 
-
+@tf.keras.utils.register_keras_serializable()
 class TextBranch(Model):
     def __init__(self, max_words:int = 20000, max_len:int = 200, embedding_dim:int = 128, **kwargs) -> None:
         """

@@ -3,7 +3,7 @@ import tensorflow as tf
 from keras import layers, Model
 import tensorflow_hub as hub
 
-
+@tf.keras.utils.register_keras_serializable()
 class TextBranchUSE(Model):
     def __init__(self, **kwargs):
         super().__init__(**kwargs)
@@ -13,3 +13,10 @@ class TextBranchUSE(Model):
         
     def call(self, inputs):
         return self.dense(self.embed(inputs))
+    
+    def get_config(self):
+        return super().get_config()
+    
+    @classmethod
+    def from_config(cls, config, custom_objects=None):
+        return cls(**config)
