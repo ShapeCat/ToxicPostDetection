@@ -11,7 +11,7 @@ class TextBranchUSE(Model):
                                    trainable=False) 
         self.dense = layers.Dense(128, activation='relu')
         
-    def call(self, inputs):
+    def call(self, inputs, training=None, mask=None):
         return self.dense(self.embed(inputs))
     
     def get_config(self):
