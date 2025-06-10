@@ -1,8 +1,8 @@
 import tensorflow as tf
 from pandas import DataFrame
 from keras import layers, optimizers, callbacks
-from .text import TextBranch, TextBranchUSE
-from .image import ImageBranch
+from .text import TextBranch, TextBranchUSE, ConditionalUSEBranch
+from .image import ImageBranch, ConditionalImageBranch
 from ..data import DatasetGenerator
 from ..preprocessing import ImagePreprocessor, TextPreprocessor
 
@@ -10,8 +10,8 @@ from ..preprocessing import ImagePreprocessor, TextPreprocessor
 def build_model():
     text_input = tf.keras.Input(shape=(), dtype=tf.string, name='text_input')
     image_input = tf.keras.Input(shape=(224, 224, 3), dtype=tf.float32, name='image_input')
-    text_branch = TextBranchUSE()(text_input)
-    image_branch = ImageBranch()(image_input)
+    text_branch = ConditionalUSEBranch()(text_input)
+    image_branch = ConditionalImageBranch()(image_input)
     concat = layers.Concatenate(name='concatination')([text_branch, image_branch])
     classifier = layers.Dense(1, activation='sigmoid', dtype=tf.float32, name='classifier')(concat)
     model = tf.keras.Model(inputs=[text_input, image_input], outputs=classifier)  
