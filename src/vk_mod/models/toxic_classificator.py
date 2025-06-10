@@ -88,7 +88,24 @@ class ToxicClassificator(Model):
         text_branch = saving.deserialize_keras_object(config.pop("text_branch"))
         image_branch = saving.deserialize_keras_object(config.pop("image_branch"))
         return cls(text_branch, image_branch, **config) 
-    
+
+
+
+def build_model():
+    text_input = tf.keras.Input(shape=(), dtype=tf.string, name='text_input')
+    image_input = tf.keras.Input(shape=(224, 224, 3), dtype=tf.float32, name='image_input')
+    text_branch = TextBranchUSE()(text_input)
+    image_branch = ImageBranch()(image_input)
+    concat = layers.Concatenate()([text_branch, image_branch])
+    classifier = layers.Dense(1, activation='sigmoid', dtype='float32')(concat)
+    model = tf.keras.Model(inputs=[text_input, image_input], outputs=classifier)  
+    model.compile(
+        optimizer=optimizers.Adam(learning_rate=1e-4),
+        loss='binary_crossentropy',
+        metrics=['accuracy']
+    )
+    return model
+ 
 
 def train_model(
     train_df: DataFrame, 
