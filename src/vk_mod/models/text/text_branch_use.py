@@ -1,14 +1,20 @@
 import tensorflow_text
 import tensorflow as tf
+from typing import Literal
 from keras import layers, Model
 import tensorflow_hub as hub
 
 @tf.keras.utils.register_keras_serializable()
 class TextBranchUSE(Model):
-    def __init__(self, **kwargs):
+    def __init__(self, encoder_size:Literal['small', 'large'] = 'small', **kwargs):
         super().__init__(**kwargs)
-        self.embed = hub.KerasLayer("https://tfhub.dev/google/universal-sentence-encoder-multilingual-large/3", 
-                                   trainable=False) 
+        if encoder_size == 'small':
+            model_url = "https://www.kaggle.com/models/google/universal-sentence-encoder/TensorFlow2/multilingual/2"
+        elif encoder_size == 'large':
+            model_url = "https://tfhub.dev/google/universal-sentence-encoder-multilingual/3"
+        else:
+            raise ValueError(f"Unknown encoder size: {encoder_size}")
+        self.embed = hub.KerasLayer(model_url, trainable=False) 
         self.dense = layers.Dense(128, activation='relu')
         
     def call(self, inputs, training=None, mask=None):
