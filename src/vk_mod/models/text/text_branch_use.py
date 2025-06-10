@@ -1,8 +1,9 @@
 import tensorflow_text
 import tensorflow as tf
+import tensorflow_hub as hub
 from typing import Literal
 from keras import layers, Model
-import tensorflow_hub as hub
+
 
 @tf.keras.utils.register_keras_serializable()
 class TextBranchUSE(Model):
@@ -19,7 +20,8 @@ class TextBranchUSE(Model):
         self.dense = layers.Dense(128, activation='relu', name='feature_extractor')
         
     def call(self, inputs, training=None, mask=None):
-        return self.dense(self.embed(inputs))
+        embeddings = self.embed(inputs)
+        return self.dense(embeddings)
     
     def get_config(self):
         return super().get_config()
