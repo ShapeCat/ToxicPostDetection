@@ -1,9 +1,10 @@
 import tensorflow as tf
-from keras import layers, Model, applications
+from keras import layers, applications
 from typing import Literal
+from ..branch_abstract import BranchAbstract
 
-@tf.keras.utils.register_keras_serializable()
-class ImageBranch(Model):
+
+class ImageBranch(BranchAbstract):
     def __init__(self, base_model:Literal['efficientnet', 'mobilenet'] = 'efficientnet', **kwargs) -> None:
         super().__init__(**kwargs)
         self.config = {'base_model': base_model}
@@ -33,15 +34,8 @@ class ImageBranch(Model):
         x = self.dense(x)
         x = self.dropout(x)
         return x
-    
-    def get_config(self) -> dict:
-        return super().get_config()
-    
-    @classmethod
-    def from_config(cls, config, custom_objects=None):
-        return cls(**config)
 
-@tf.keras.utils.register_keras_serializable()
+
 class ConditionalImageBranch(ImageBranch):
     def call(self, inputs, training=None, mask=None):
         have_image = tf.reduce_max(tf.abs(inputs), axis=[1, 2, 3]) > 0.01

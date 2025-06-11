@@ -1,9 +1,9 @@
 import tensorflow as tf
-from keras import layers, Model
+from keras import layers
+from ..branch_abstract import BranchAbstract
 
 
-@tf.keras.utils.register_keras_serializable()
-class TextBranch(Model):
+class TextBranch(BranchAbstract):
     def __init__(self, max_words:int = 20000, max_len:int = 200, embedding_dim:int = 128, **kwargs) -> None:
         super().__init__(**kwargs)
         self.max_words = max_words
@@ -25,22 +25,3 @@ class TextBranch(Model):
         x = self.embedding(x)
         x = self.bidirectional_gru(x)
         return self.dropout(x)
-    
-    def get_config(self):
-        config = super().get_config()
-        config.update({
-            "max_words": self.max_words,
-            "max_len": self.max_len,
-            "embedding_dim": self.embedding_dim
-        })
-        return config
-
-    @classmethod
-    def from_config(cls, config, custom_objects=None):
-        config = config.copy()
-        return cls(
-            max_words=config.pop("max_words", 20000),
-            max_len=config.pop("max_len", 200), 
-            embedding_dim=config.pop("embedding_dim", 128),
-            **config
-        )
