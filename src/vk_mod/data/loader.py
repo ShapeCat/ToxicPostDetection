@@ -16,7 +16,7 @@ def load_dataset(path:Path|list[Path], sample_limit:int=-1) -> pd.DataFrame:
     """
     if not isinstance(path, list):
         path = [path]
-    df = pd.DataFrame()
+    df = pd.DataFrame(columns=['text', 'image_name', 'blocked'])
     sample_limit = int(sample_limit//len(path)) if sample_limit > 0 else sample_limit
     for p in path:
         df = pd.concat([df, _load_dataset(p, sample_limit)], ignore_index=True)   
