@@ -1,2 +1,2 @@
-from .image_branch import ImageBranch
+from .image_branch import ImageBranch, ConditionalImageBranch
 from .conditional_image_branch import ConditionalImageBranch

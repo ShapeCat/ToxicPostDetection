@@ -1,3 +1,3 @@
 from .text_branch import TextBranch
-from .text_branch_use import TextBranchUSE
+from .text_branch_use import TextBranchUSE, ConditionalUSEBranch
 from .conditional_use_text_branch import ConditionalUSEBranch
