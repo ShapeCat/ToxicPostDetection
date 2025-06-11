@@ -1,12 +1,13 @@
 import requests
 import pandas as pd
 import tensorflow as tf
-from keras import applications
+from keras.applications import mobilenet, efficientnet
 from pathlib import Path
+from typing import Literal
 
 
 class ImagePreprocessor:
-    def __init__(self, image_dir:str|Path, img_size:tuple[int, int]=(224, 224)) -> None:  
+    def __init__(self, image_dir:str|Path, img_size:tuple[int, int]=(224, 224), image_model:Literal['efficientnet', 'mobilenet'] = 'efficientnet') -> None:  
         """
         Initialize an ImagePreprocessor instance.
 
@@ -16,6 +17,7 @@ class ImagePreprocessor:
         """
         self.image_dir = image_dir
         self.img_size = img_size
+        self.image_model = image_model
 
     def load_from_file(self, image_path:str|Path) -> tf.Tensor:
         """
@@ -70,4 +72,6 @@ class ImagePreprocessor:
         """
         img = tf.image.decode_jpeg(img, channels=3)
         img = tf.image.resize(img, self.img_size)
-        return applications.efficientnet.preprocess_input(img)
+        if self.image_model == 'mobilenet':
+            return mobilenet.preprocess_input(img)
+        return efficientnet.preprocess_input(img)
