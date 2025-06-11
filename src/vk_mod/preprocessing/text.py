@@ -2,7 +2,7 @@ import demoji, re
 
 
 class TextPreprocessor:
-    def __init__(self, link_placeholder:str="ССЫЛКА", mention_placeholder:str="УПОМЯНАНИЕ", encoding:str="cp1251") -> None:
+    def __init__(self, link_placeholder:str="ССЫЛКА", mention_placeholder:str="УПОМЯНАНИЕ", encoding:str="utf-8") -> None:
         """
         Initialize a TextPreprocessor instance with optional placeholders and encoding.
 
