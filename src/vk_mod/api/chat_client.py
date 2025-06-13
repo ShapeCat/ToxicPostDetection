@@ -3,31 +3,9 @@ from .base_client import BaseAPIClient
 
 
 class ChatClient(BaseAPIClient):
-    def __init__(self, community_token:str, admin_id:int):
-        """
-        Initialize a ChatClient instance.
-
-        Args:
-            access_token (str): The access token for the VK API.
-            community_token (str): The community token for the VK API.
-            service_key (str): The service key for the VK API.
-            admin_id (int): The administrator ID for the chat client.
-        """
-        super().__init__(community_token)
-        self.admin_id = admin_id
-
-    def send_message_to_admin(self, message:str) -> int:
-        """
-        Send a message to the admin.
-
-        Args:
-            message (str): The message to be sent.
-
-        Returns:
-            int: The message ID of the sent message.
-        """
+    def send(self, message:str, user_id:str) -> int:
         params = {
-            'peer_id': self.admin_id,
+            'peer_id': user_id,
             'message': message,
             'random_id': randint(1, 10*5)
 
@@ -35,47 +13,23 @@ class ChatClient(BaseAPIClient):
         response = self.post_request("messages.send", params)
         return response
 
-    def get_message_by_id(self, message_id:int) -> list[dict[str, str]]:
-        """
-        Get a message by its ID.
-
-        Args:
-            message_id (int): The message ID to be retrieved.
-
-        Returns:
-            list[dict[str, str]]: A list containing a single message dictionary.
-
-        Raises:
-            VKAPIError: If the VK API returns an error.
-        """
+    def get_by_id(self, message_id:int, user_id:str) -> list[dict[str, str]]:
         params = {
-            'peer_id': self.admin_id,
+            'peer_id': user_id,
             'cmids': message_id,
         }
         response = self.get_request("messages.getById", params)
         return response['items']
 
-    def get_all_chat_messages(self, count:int=200) -> list[dict[str, str]]:
-        """
-        Get all messages in the chat.
-
-        Args:
-            count (int, optional): The number of messages to retrieve. Defaults to 200.
-
-        Returns:
-            list[dict[str, str]]: A list of message dictionaries.
-
-        Raises:
-            VKAPIError: If the VK API returns an error.
-        """
+    def get_all(self, user_id:str, count:int=200) -> list[dict[str, str]]:
         params = {
-            'peer_id': self.admin_id,
+            'peer_id': user_id,
             'count': count,
         }
         response = self.get_request("messages.getHistory", params, self.community_token)
         return response['items']
     
-    def delete_message(self, message_id:int, delete_for_all:bool=True) -> int:  
+    def delete(self, user_id:str, message_id:int, delete_for_all:bool=True) -> int:  
         """
         Delete a message by its ID.
 
@@ -90,14 +44,14 @@ class ChatClient(BaseAPIClient):
             VKAPIError: If the VK API returns an error.
         """
         params = {
-            'peer_id': self.admin_id,
+            'peer_id': user_id,
             'cmids': message_id,
             'delete_for_all': 1 if delete_for_all else 0,
         }
         response = self.post_request("messages.delete", params, self.community_token)
         return response
 
-    def edit_message(self, message_id:int, message:str) -> int:
+    def edit(self, user_id:str, message_id:int, message:str) -> int:
         """
         Edit a message by its ID.
 
@@ -112,7 +66,7 @@ class ChatClient(BaseAPIClient):
             VKAPIError: If the VK API returns an error.
         """
         params = {
-            'peer_id': self.admin_id,
+            'peer_id': user_id,
             'cmid': message_id,
             'message': message,
         }
