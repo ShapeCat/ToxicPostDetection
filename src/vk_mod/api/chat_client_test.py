@@ -13,11 +13,10 @@ def chat_client():
     """
     return ChatClient(
         community_token="community_token",
-        admin_id=12345
     )
 
 
-def test_send_message_to_admin_success(chat_client, requests_mock):
+def test_send_message_success(chat_client, requests_mock):
     """
     Test that send_message_to_admin sends a message to the admin successfully.
 
@@ -25,12 +24,13 @@ def test_send_message_to_admin_success(chat_client, requests_mock):
     WHEN:  send_message_to_admin is called with a message
     THEN:  the response is parsed correctly, and the URL contains the correct parameters
     """
+    user_id = 12345
     expected_response = {"response": 1}
     requests_mock.post(f"{BaseAPIClient.url}messages.send", json=expected_response)
     
-    result = chat_client.send_message_to_admin("Test message")
+    result = chat_client.send("Test message", user_id)
     assert result == expected_response["response"]
-    assert "peer_id=12345" in requests_mock.last_request.url
+    assert f"peer_id={user_id}" in requests_mock.last_request.url
     assert "message=Test+message" in requests_mock.last_request.url
     assert "random_id" in requests_mock.last_request.url
 
@@ -43,6 +43,7 @@ def test_get_message_by_id_success(chat_client, requests_mock):
     WHEN:  get_message_by_id is called with a message id
     THEN:  the response is parsed correctly, and the URL contains the correct parameters
     """
+    user_id = 12345
     expected_response = {
         "response": 
         {"items": [
@@ -52,10 +53,10 @@ def test_get_message_by_id_success(chat_client, requests_mock):
     }
     requests_mock.get(f"{BaseAPIClient.url}messages.getById", json=expected_response)
     
-    result = chat_client.get_message_by_id(1)
+    result = chat_client.get_by_id(1, user_id)
     assert isinstance(result, list) 
     assert result[0]["id"] == 1
-    assert "peer_id=12345" in requests_mock.last_request.url
+    assert f"peer_id={user_id}" in requests_mock.last_request.url
 
 
 def test_get_all_chat_messages_success(chat_client, requests_mock):
@@ -66,6 +67,7 @@ def test_get_all_chat_messages_success(chat_client, requests_mock):
     WHEN:  get_all_chat_messages is called with a specified count
     THEN:  the response contains the correct number of items, and the URL includes the correct parameters
     """
+    user_id = 12345
     count = 5
     expected_response = {
         "response": 
@@ -77,10 +79,10 @@ def test_get_all_chat_messages_success(chat_client, requests_mock):
     }
     requests_mock.get(f"{BaseAPIClient.url}messages.getHistory", json=expected_response)
     
-    result = chat_client.get_all_chat_messages(count)
+    result = chat_client.get_all(user_id, count=count)
     assert len(result) == 2 
-    assert "peer_id=12345" in requests_mock.last_request.url
-    assert "count=5" in requests_mock.last_request.url
+    assert f"peer_id={user_id}" in requests_mock.last_request.url
+    assert f"count={count}" in requests_mock.last_request.url
 
 
 @pytest.mark.parametrize("delete_for_all", [True, False])
@@ -92,14 +94,17 @@ def test_delete_message_parametrize_success(chat_client, requests_mock, delete_f
     WHEN:  delete_message is called with a message id and the delete_for_all parameter with a value of True or False
     THEN:  the response is parsed correctly, and the URL contains the correct parameters
     """
+    user_id = 12345
     delete_for_all = 1 if delete_for_all else 0
+    cmids = 1
     excpected_response = {"response": 1}
     requests_mock.post(f"{BaseAPIClient.url}messages.delete", json=excpected_response)
     
-    response = chat_client.delete_message(1, delete_for_all=delete_for_all)
+    response = chat_client.delete(user_id, cmids, delete_for_all=delete_for_all)
     assert response == 1
     assert f"delete_for_all={delete_for_all}" in requests_mock.last_request.url
-    assert "peer_id=12345" in requests_mock.last_request.url
+    assert f"peer_id={user_id}" in requests_mock.last_request.url
+    assert f"cmids={cmids}" in requests_mock.last_request.url
 
 
 def test_edit_message_success(chat_client, requests_mock):
@@ -110,9 +115,14 @@ def test_edit_message_success(chat_client, requests_mock):
     WHEN:  edit_message is called with a message id and new text
     THEN:  the response is parsed correctly, and the URL contains the correct parameters
     """
+    user_id = 12345
+    cmids = 1
+    mew_text = "New text"
     expected_response = {"response": 1}
     requests_mock.post(f"{BaseAPIClient.url}messages.edit", json=expected_response)
     
-    result = chat_client.edit_message(1, "New text")
+    result = chat_client.edit(user_id, cmids, mew_text)
     assert result == 1 
-    assert "peer_id=12345" in requests_mock.last_request.url
+    assert f"peer_id={user_id}" in requests_mock.last_request.url
+    assert f"cmid={cmids}" in requests_mock.last_request.url
+    assert f"message={mew_text.replace(' ', '+')}" in requests_mock.last_request.url
