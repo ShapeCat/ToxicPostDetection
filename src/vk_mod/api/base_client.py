@@ -1,4 +1,5 @@
 import requests
+from typing import Any
 from .exceptions import VKAPIError
 
 
@@ -6,7 +7,7 @@ class BaseAPIClient:
     url = 'https://api.vk.com/method/'
     api_version = "5.199"
 
-    def __init__(self, community_token:str) -> None:
+    def __init__(self, community_token: str) -> None:
         """
         Initialize a BaseAPIClient instance.
 
@@ -17,7 +18,11 @@ class BaseAPIClient:
         """
         self.community_token = community_token
 
-    def post_request(self, method:str, params:dict[str, str], access_token:None|str=None) -> dict[str, str]:
+    def post_request(self,
+                     method: str,
+                     params: dict[str, str] = {},
+                     access_token: str|None = None
+                     ) -> Any:
         """
         Make a POST request to VK API method.
 
@@ -46,7 +51,10 @@ class BaseAPIClient:
             raise VKAPIError(f"There is an error while calling VK API {method} method: {error['error_msg']}({error['error_code']})")          
         return json_response.get('response')
     
-    def get_request(self, method:str, params:dict[str, str], access_token:str|None=None) -> dict[str, str]:
+    def get_request(self,
+                    method: str,
+                    params: dict[str, str] = {},
+                    access_token: str|None = None) -> Any:
         """
         Make a GET request to VK API method.
 
