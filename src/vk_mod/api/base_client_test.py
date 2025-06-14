@@ -11,9 +11,13 @@ def api_client_fixture():
     Returns:
         BaseAPIClient: An instance of BaseAPIClient initialized with test access, community, and service keys.
     """
-    return BaseAPIClient(
-        community_token="test_community_token",
-    )
+    return BaseAPIClient(community_token="test_community_token")
+
+
+def test_initialize_success():
+    community_token = "test_community_token"
+    client = BaseAPIClient(community_token=community_token)
+    assert client.community_token == community_token
 
 
 def test_post_request_success(api_client_fixture, requests_mock):
