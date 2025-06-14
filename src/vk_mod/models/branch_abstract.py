@@ -1,12 +1,20 @@
 from keras import Model
+from typing import Any
 import tensorflow as tf
 
 
 @tf.keras.utils.register_keras_serializable()
 class BranchAbstract(Model):
+    def __init__(self, **kwargs):        
+        self.config = kwargs.pop('config', {})
+        super().__init__(**kwargs)
+
     def get_config(self):
-        return super().get_config()
+        config = super().get_config()
+        config.update({"config": self.config})
+        return config
     
     @classmethod
     def from_config(cls, config, custom_objects=None):
-        return cls(**config)
+        custom_config = config.pop("config", {}) 
+        return cls(**custom_config, **config)

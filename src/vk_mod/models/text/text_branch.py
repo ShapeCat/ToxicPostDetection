@@ -5,7 +5,13 @@ from ..branch_abstract import BranchAbstract
 
 class TextBranch(BranchAbstract):
     def __init__(self, max_words:int = 20000, max_len:int = 200, embedding_dim:int = 128, **kwargs) -> None:
-        super().__init__(**kwargs)
+        config = {
+            "max_words": max_words,
+            "max_len": max_len,
+            "embedding_dim": embedding_dim
+
+        }
+        super().__init__(config=config, **kwargs)
         self.max_words = max_words
         self.max_len = max_len
         self.embedding_dim = embedding_dim

@@ -11,13 +11,14 @@ class TunableImageBranch(BranchAbstract):
                  dropout_postition:Literal['pre', 'post', 'none'] = 'post',
                  dropout_rate:float = 0.3,
                  **kwargs) -> None:
-        super().__init__(**kwargs)
-        self.config = {
+        config = {
             'base_model': base_model,
             'dense_units': dense_units,
             'dropout_postition': dropout_postition,
             'dropout_rate': dropout_rate
             }
+        super().__init__(config=config, **kwargs)
+
         
         if base_model == 'efficientnet':
             self.base_model = applications.EfficientNetB0(

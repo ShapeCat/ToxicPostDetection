@@ -13,13 +13,14 @@ class TunableUSEBranch(BranchAbstract):
                 dropout_postition:Literal['pre', 'post', 'none'] = 'post',
                 dense_units:int = 128,
                 **kwargs):
-        super().__init__(**kwargs)
-        self.config = {
+        config = {
             'encoder_size': encoder_size,
             'dropout_rate': dropout_rate,
             'dropout_postition': dropout_postition,
             'dense_units': dense_units,          
         }
+        super().__init__(config=config, **kwargs)
+
 
         if encoder_size == 'small':
             model_url = "https://www.kaggle.com/models/google/universal-sentence-encoder/TensorFlow2/multilingual/2"

@@ -8,10 +8,10 @@ from ..branch_abstract import BranchAbstract
 
 class TextBranchUSE(BranchAbstract):
     def __init__(self, encoder_size:Literal['small', 'large'] = 'small', **kwargs):
-        super().__init__(**kwargs)
-        self.config = {
+        config = {
             'encoder_size': encoder_size,
         }
+        super().__init__(config=config, **kwargs)
 
         if encoder_size == 'small':
             model_url = "https://www.kaggle.com/models/google/universal-sentence-encoder/TensorFlow2/multilingual/2"

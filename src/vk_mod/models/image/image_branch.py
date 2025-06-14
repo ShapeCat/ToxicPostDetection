@@ -6,9 +6,9 @@ from ..branch_abstract import BranchAbstract
 
 class ImageBranch(BranchAbstract):
     def __init__(self, base_model:Literal['efficientnet', 'mobilenet'] = 'efficientnet', **kwargs) -> None:
-        super().__init__(**kwargs)
-        self.config = {'base_model': base_model}
-        
+        config = {'base_model': base_model}
+        super().__init__(config=config, **kwargs)
+               
         if base_model == 'efficientnet':
             self.base_model = applications.EfficientNetB0(
                 include_top=False,
