@@ -48,3 +48,13 @@ class WallClient(BaseAPIClient):
                       ) -> list[dict[str, str]]:
         posts = self.get_all(community_id)
         return [post for post in posts if post["date"]>since_timestamp]
+
+    def delete(self,
+               community_id: str,
+               post_id: str
+               ) -> int:
+        params = {
+            "owner_id": f"-{community_id}",
+            "post_id": post_id
+        }
+        return self.post_request("wall.delete", params, access_token=self.access_token)
