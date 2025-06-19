@@ -12,10 +12,13 @@ Image.MAX_IMAGE_PIXELS = None
 # TODO Add check for non-existant save folder
 def load_from_hugginface(dataset_name: str,
                          target_path: os.PathLike,
-                         split: str="train"
+                         split: str="train",
+                         max_rows: int = -1
                          ) -> None:
-    dataset = load_dataset(dataset_name, split=split)
-    DataFrame(dataset).to_csv(target_path)
+    dataset:DataFrame = load_dataset(dataset_name, split=split).to_pandas()
+    if max_rows > 0:
+        dataset = dataset.sample(min(max_rows, len(dataset))) 
+    dataset.to_csv(target_path)
 
 
 def download_image(uri: str,
