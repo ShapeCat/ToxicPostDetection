@@ -1,9 +1,15 @@
 from typing import Any, Literal
 from configparser import ConfigParser, NoOptionError, NoSectionError
 from pathlib import Path
+import os
 
 
-def load_config(section:str, key:str, file_path:str|Path = "config.ini", default_value:Any = None, return_type:Literal["str", "int", "float", "bool"] = "str") -> Any:
+def load_config(section: str,
+                key: str,
+                file_path: os.PathLike = Path("config.ini"),
+                default_value: Any = None,
+                return_type:Literal["str", "int", "float", "bool"] = "str"
+                ) -> Any:
     """
     Load a configuration value from a file.
 
@@ -23,9 +29,7 @@ def load_config(section:str, key:str, file_path:str|Path = "config.ini", default
     Returns:
         Any: The read value converted to the specified type or the default value if the key is not found or the file is not found.
     """
-    if isinstance(file_path, str):
-        file_path = Path(file_path)
-    if not file_path.exists():
+    if not os.path.exists(file_path):
         if default_value is None:
             raise FileNotFoundError(f"Config file not found: {file_path}")
         return default_value
