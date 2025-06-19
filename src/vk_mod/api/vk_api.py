@@ -1,10 +1,12 @@
 from .wall_client import WallClient
 from .chat_client import ChatClient
 from .longpoll_client import LongPollClient
+from .users_client import UserClient
+from .community_client import CommunityClient
 
 
 class VK_API:
-    def __init__(self, community_token:str, access_token:str, admin_id:int|str):
+    def __init__(self, community_token:str, access_token:str):
         """
         Initialize a VK_API instance.
 
@@ -17,11 +19,8 @@ class VK_API:
         Raises:
             ValueError: If admin_id is not convertible to integer.
         """
-        if not isinstance(admin_id, int):
-            try:
-                admin_id = int(admin_id)
-            except (ValueError, TypeError):
-                raise ValueError("admin_id must be convertible to integer")
         self.wall = WallClient(community_token, access_token)
-        self.chat = ChatClient(community_token, admin_id)
+        self.chat = ChatClient(community_token)
         self.longpoll = LongPollClient(community_token)
+        self.user = UserClient(community_token)
+        self.community = CommunityClient(community_token)
