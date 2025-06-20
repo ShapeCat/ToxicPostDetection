@@ -70,7 +70,7 @@ class ImagePreprocessor:
         Returns:
             A preprocessed tensor suitable for EfficientNet model input.
         """
-        img = tf.image.decode_jpeg(img, channels=3)
+        img = tf.image.decode_image(img, channels=3)
         img = tf.image.resize(img, self.img_size)
         if self.image_model == 'mobilenet':
             return mobilenet.preprocess_input(img)
