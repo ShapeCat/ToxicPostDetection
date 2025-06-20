@@ -43,11 +43,11 @@ def load_config(section: str,
                 raise ValueError(f"Key {key} not found in {file_path}")
             return default_value
         
-        if return_type is "bool":
+        if return_type == "bool":
             return bool(value)      
-        if return_type is "int":
+        if return_type == "int":
             return int(value)     
-        if return_type is "float":
+        if return_type == "float":
             return float(value)
         return str(value)
     
