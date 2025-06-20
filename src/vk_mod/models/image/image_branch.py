@@ -1,5 +1,7 @@
 import tensorflow as tf
 from keras import layers, applications
+from keras.applications.mobilenet_v3 import MobileNetV3Large
+from keras.applications.efficientnet import EfficientNetB0
 from typing import Literal
 from ..branch_abstract import BranchAbstract
 
@@ -10,13 +12,13 @@ class ImageBranch(BranchAbstract):
         super().__init__(config=config, **kwargs)
                
         if base_model == 'efficientnet':
-            self.base_model = applications.EfficientNetB0(
+            self.base_model = EfficientNetB0(
                 include_top=False,
                 weights='imagenet',
                 input_shape=(224, 224, 3)
             )
         elif base_model == 'mobilenet':
-            self.base_model = applications.MobileNetV3Large(
+            self.base_model = MobileNetV3Large(
                 include_top=False,
                 weights='imagenet',
                 input_shape=(224, 224, 3)
