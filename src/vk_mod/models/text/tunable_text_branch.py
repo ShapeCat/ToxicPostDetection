@@ -12,12 +12,14 @@ class TunableUSEBranch(BranchAbstract):
                 dropout_rate:float = 0.3,
                 dropout_postition:Literal['pre', 'post', 'none'] = 'post',
                 dense_units:int = 128,
+                additional_dense_units:int = 0,
                 **kwargs):
         config = {
             'encoder_size': encoder_size,
             'dropout_rate': dropout_rate,
             'dropout_postition': dropout_postition,
-            'dense_units': dense_units,          
+            'dense_units': dense_units,
+            "additional_dense_units": additional_dense_units     
         }
         super().__init__(config=config, **kwargs)
 
@@ -29,12 +31,14 @@ class TunableUSEBranch(BranchAbstract):
         else:
             raise ValueError(f"Unknown encoder size: {encoder_size}")                          
         self.embed = hub.KerasLayer(model_url, trainable=False, name='embeding') 
-        
+        self.dense_meta = layers.Dense(additional_dense_units, activation='relu') if additional_dense_units > 0 else None
         self.dense = layers.Dense(dense_units, activation='relu', name=f'feature_extractor')
         self.dropout = layers.Dropout(dropout_rate, name='dropout') if dropout_postition != 'none' else None
 
     def call(self, inputs, training=None, mask=None):
         x = self.embed(inputs)
+        if self.dense_meta:
+            x = self.dense_meta(x)
         if self.dropout and self.config['dropout_postition'] == 'pre':
             x = self.dropout(x)
         x = self.dense(x)

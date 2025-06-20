@@ -12,12 +12,14 @@ class TunableImageBranch(BranchAbstract):
                  dense_units:int = 128,
                  dropout_postition:Literal['pre', 'post', 'none'] = 'post',
                  dropout_rate:float = 0.3,
+                 additional_dense_units:int = 0,
                  **kwargs) -> None:
         config = {
             'base_model': base_model,
             'dense_units': dense_units,
             'dropout_postition': dropout_postition,
-            'dropout_rate': dropout_rate
+            'dropout_rate': dropout_rate,
+            "additional_dense_units": additional_dense_units
             }
         super().__init__(config=config, **kwargs)
 
@@ -38,12 +40,15 @@ class TunableImageBranch(BranchAbstract):
             raise ValueError(f"Unknown base model: {base_model}")
         self.base_model.trainable = False
         self.pooling2d = layers.GlobalAveragePooling2D(name='pooling2d')
+        self.dense_meta = layers.Dense(additional_dense_units, activation='relu') if additional_dense_units > 0 else None
         self.dense = layers.Dense(dense_units, activation='relu', name=f'feature_extractor')
         self.dropout = layers.Dropout(dropout_rate, name='dropout') if dropout_postition != 'none' else None
             
     def call(self, inputs, training=None, mask=None):
         x = self.base_model(inputs)
         x = self.pooling2d(x)
+        if self.dense_meta:
+            x = self.dense_meta(x)
         if self.dropout and self.config['dropout_postition'] == 'pre': 
             x = self.dropout(x)
         x = self.dense(x)
