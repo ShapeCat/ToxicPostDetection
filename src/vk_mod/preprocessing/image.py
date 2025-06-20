@@ -30,15 +30,15 @@ class ImagePreprocessor:
             tf.Tensor: The preprocessed image. If the image path is invalid or the file cannot be read,
                     returns a tensor of zeros with the specified image size.
         """
-        if pd.isna(image_path) or image_path == '':
-            return tf.zeros((*self.img_size, 3), dtype=tf.float32)
+        if image_path is None or image_path == "":
+            return tf.convert_to_tensor(tf.zeros((*self.img_size, 3), dtype=tf.float32))
         
         full_path = str(Path(self.image_dir, image_path))
         try:
             img = tf.io.read_file(full_path)
             return self._preprocess_image(img)
         except:
-            return tf.zeros((*self.img_size, 3), dtype=tf.float32)
+            return tf.convert_to_tensor(tf.zeros((*self.img_size, 3), dtype=tf.float32))
         
     def load_from_url(self, image_url:str) ->tf.Tensor:
         """
@@ -51,8 +51,8 @@ class ImagePreprocessor:
             tf.Tensor: The preprocessed image. If the image URL is invalid, the request times out, or the image cannot be read,
                     returns a tensor of zeros with the specified image size.
         """
-        if pd.isna(image_url) or image_url == '':
-            return tf.zeros((*self.img_size, 3), dtype=tf.float32)
+        if not image_url:
+            return tf.convert_to_tensor(tf.zeros((*self.img_size, 3), dtype=tf.float32))
         try:
             response = requests.get(image_url, timeout=3)
             response.raise_for_status()
@@ -60,7 +60,7 @@ class ImagePreprocessor:
             return self._preprocess_image(img)         
         except Exception as e:
             print(e)
-            return tf.zeros((*self.img_size, 3), dtype=tf.float32)
+            return tf.convert_to_tensor(tf.zeros((*self.img_size, 3), dtype=tf.float32))
         
     def _preprocess_image(self, img):
         """
