@@ -56,8 +56,10 @@ class ImagePreprocessor:
         try:
             response = requests.get(image_url, timeout=3)
             response.raise_for_status()
-            return self._preprocess_image(response.content)         
-        except:
+            img = tf.convert_to_tensor(response.content, dtype=tf.string)
+            return self._preprocess_image(img)         
+        except Exception as e:
+            print(e)
             return tf.zeros((*self.img_size, 3), dtype=tf.float32)
         
     def _preprocess_image(self, img):
