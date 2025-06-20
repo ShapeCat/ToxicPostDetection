@@ -33,7 +33,7 @@ class ImagePreprocessor:
         if pd.isna(image_path) or image_path == '':
             return tf.zeros((*self.img_size, 3), dtype=tf.float32)
         
-        full_path = Path(self.image_dir, image_path)
+        full_path = str(Path(self.image_dir, image_path))
         try:
             img = tf.io.read_file(full_path)
             return self._preprocess_image(img)
