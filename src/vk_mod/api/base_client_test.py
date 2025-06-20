@@ -5,12 +5,6 @@ from .base_client import BaseAPIClient
 
 @pytest.fixture
 def api_client_fixture():
-    """
-    Fixture to provide a BaseAPIClient instance for testing.
-
-    Returns:
-        BaseAPIClient: An instance of BaseAPIClient initialized with test access, community, and service keys.
-    """
     return BaseAPIClient(community_token="test_community_token")
 
 
@@ -21,13 +15,6 @@ def test_initialize_success():
 
 
 def test_post_request_success(api_client_fixture, requests_mock):
-    """
-    Test that a successful POST request is handled correctly by BaseAPIClient.
-
-    GIVEN: A BaseAPIClient instance and a mocked successful VK API response
-    WHEN:  post_request is called with valid method and parameters
-    THEN:  the response is parsed correctly, and the access token/version are included in the URL
-    """
     method = "users.get"
     params = {
         "user_ids": "1",
@@ -43,6 +30,7 @@ def test_post_request_success(api_client_fixture, requests_mock):
     requests_mock.post(url, json=expected_response)
 
     response = api_client_fixture.post_request(method, params)
+
     assert response == expected_response["response"]
     assert requests_mock.last_request.url.startswith(url)
     assert f"access_token={api_client_fixture.community_token}" in requests_mock.last_request.url
@@ -50,13 +38,6 @@ def test_post_request_success(api_client_fixture, requests_mock):
 
 
 def test_get_request_success(api_client_fixture, requests_mock):
-    """
-    Test that a successful GET request is handled correctly by BaseAPIClient.
-
-    GIVEN: A BaseAPIClient instance and a mocked successful VK API response
-    WHEN:  get_request is called with valid method and parameters
-    THEN:  the response is parsed correctly, and the access token/version are included in the URL
-    """
     method = "users.get"
     params = {"user_ids": "1"}
     url = f"{api_client_fixture.url}{method}"
@@ -69,6 +50,7 @@ def test_get_request_success(api_client_fixture, requests_mock):
     requests_mock.get(url, json=expected_response)
 
     response = api_client_fixture.get_request(method, params)
+
     assert response == expected_response["response"]
     assert requests_mock.last_request.url.startswith(url)
     assert f"access_token={api_client_fixture.community_token}" in requests_mock.last_request.url
@@ -76,13 +58,6 @@ def test_get_request_success(api_client_fixture, requests_mock):
 
 
 def test_post_request_api_error(api_client_fixture, requests_mock):
-    """
-    Test that VK API errors in POST requests raise VKAPIError with correct details.
-
-    GIVEN: A BaseAPIClient instance and a mocked VK API error response
-    WHEN:  post_request is called with invalid parameters
-    THEN:  a VKAPIError is raised with the error message and code from the API response [[1]]
-    """
     method = "users.get"
     params = {"user_ids": "1", "name": "Name"}
     url = f"{api_client_fixture.url}{method}"
@@ -100,14 +75,7 @@ def test_post_request_api_error(api_client_fixture, requests_mock):
         api_client_fixture.post_request(method, params)
 
 
-def test_get_request_api_error(api_client_fixture, requests_mock):
-    """
-    Test that VK API errors in GET requests raise VKAPIError with correct details.
-
-    GIVEN: A BaseAPIClient instance and a mocked VK API error response
-    WHEN:  get_request is called with invalid parameters
-    THEN:  a VKAPIError is raised with the error message and code from the API response [[8]]
-    """
+def test_get_request_api_error(api_client_fixture, requests_mock): 
     method = "users.get"
     params = {"user_ids": "1"}
     url = f"{api_client_fixture.url}{method}"
@@ -126,13 +94,6 @@ def test_get_request_api_error(api_client_fixture, requests_mock):
 
 
 def test_post_request_custom_token_success(api_client_fixture, requests_mock):
-    """
-    Test that a custom access token is used in POST requests.
-
-    GIVEN: A BaseAPIClient instance and a mocked successful VK API response
-    WHEN:  post_request is called with a custom access token
-    THEN:  the custom token is included in the request URL instead of the default token [[6]]
-    """
     method = "users.get"
     params = {"user_ids": "1", "name": "Name"}
     custom_token = "custom_access_token"
@@ -145,6 +106,7 @@ def test_post_request_custom_token_success(api_client_fixture, requests_mock):
     requests_mock.post(url, json=expected_response)
 
     response = api_client_fixture.post_request(method, params, access_token=custom_token)
+
     assert response == expected_response["response"]
     assert requests_mock.last_request.url.startswith(url)
     assert f"access_token={custom_token}" in requests_mock.last_request.url
@@ -152,13 +114,6 @@ def test_post_request_custom_token_success(api_client_fixture, requests_mock):
 
 
 def test_get_request_custom_token_success(api_client_fixture, requests_mock):
-    """
-    Test that a custom access token is used in GET requests.
-
-    GIVEN: A BaseAPIClient instance and a mocked successful VK API response
-    WHEN:  get_request is called with a custom access token
-    THEN:  the custom token is included in the request URL instead of the default token [[6]]
-    """
     method = "users.get"
     params = {"user_ids": "1"}
     custom_token = "custom_access_token"
@@ -172,6 +127,7 @@ def test_get_request_custom_token_success(api_client_fixture, requests_mock):
     requests_mock.get(url, json=expected_response)
 
     response = api_client_fixture.get_request(method, params, access_token=custom_token)
+    
     assert response == expected_response["response"]
     assert requests_mock.last_request.url.startswith(url)
     assert f"access_token={custom_token}" in requests_mock.last_request.url

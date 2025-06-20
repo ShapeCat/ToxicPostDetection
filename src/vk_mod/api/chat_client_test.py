@@ -5,25 +5,10 @@ from .chat_client import ChatClient
 
 @pytest.fixture
 def chat_client():  
-    """
-    Fixture to provide a ChatClient instance for testing.
-
-    Returns:
-        ChatClient: A ChatClient instance with test access, community, and service keys.
-    """
-    return ChatClient(
-        community_token="community_token",
-    )
+    return ChatClient(community_token="community_token")
 
 
 def test_send_message_success(chat_client, requests_mock):
-    """
-    Test that send_message_to_admin sends a message to the admin successfully.
-
-    GIVEN: A ChatClient instance and a mocked VK API response
-    WHEN:  send_message_to_admin is called with a message
-    THEN:  the response is parsed correctly, and the URL contains the correct parameters
-    """
     user_id = 12345
     message = "Test message"
     expected_response = {"response": 1}
@@ -38,13 +23,6 @@ def test_send_message_success(chat_client, requests_mock):
 
 
 def test_get_message_by_id_success(chat_client, requests_mock):
-    """
-    Test that get_message_by_id retrieves a message by id successfully.
-
-    GIVEN: A ChatClient instance and a mocked VK API response
-    WHEN:  get_message_by_id is called with a message id
-    THEN:  the response is parsed correctly, and the URL contains the correct parameters
-    """
     user_id = 12345
     message_id = 1
     expected_response = {
@@ -65,13 +43,6 @@ def test_get_message_by_id_success(chat_client, requests_mock):
 
 
 def test_get_all_chat_messages_success(chat_client, requests_mock):
-    """
-    Test that get_all_chat_messages retrieves the correct number of messages.
-
-    GIVEN: A ChatClient instance and a mocked VK API response
-    WHEN:  get_all_chat_messages is called with a specified count
-    THEN:  the response contains the correct number of items, and the URL includes the correct parameters
-    """
     user_id = 12345
     count = 5
     expected_response = {
@@ -93,13 +64,6 @@ def test_get_all_chat_messages_success(chat_client, requests_mock):
 
 @pytest.mark.parametrize("delete_for_all", [True, False])
 def test_delete_message_parametrize_success(chat_client, requests_mock, delete_for_all):
-    """
-    Test that delete_message successfully deletes a message with and without the delete_for_all parameter.
-
-    GIVEN: A ChatClient instance and a mocked VK API response
-    WHEN:  delete_message is called with a message id and the delete_for_all parameter with a value of True or False
-    THEN:  the response is parsed correctly, and the URL contains the correct parameters
-    """
     user_id = 12345
     message_id = 1
     excpected_response = {"response": 1}
@@ -114,13 +78,6 @@ def test_delete_message_parametrize_success(chat_client, requests_mock, delete_f
 
 
 def test_edit_message_success(chat_client, requests_mock):
-    """
-    Test that edit_message successfully edits a message.
-
-    GIVEN: A ChatClient instance and a mocked VK API response
-    WHEN:  edit_message is called with a message id and new text
-    THEN:  the response is parsed correctly, and the URL contains the correct parameters
-    """
     user_id = 12345
     message_id = 1
     mew_text = "New text"
