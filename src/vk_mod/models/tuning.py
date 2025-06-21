@@ -85,6 +85,7 @@ def compare_configurations(
         val_ds: tf.data.Dataset,
         test_ds: tf.data.Dataset,
         configurations: list[dict[str, dict[str, Any]]],
+        epochs:int = 20
         ):
     results = []
     histories = []
@@ -102,7 +103,7 @@ def compare_configurations(
         history = model.fit(
             train_ds,
             validation_data=val_ds,
-            epochs=20,
+            epochs=epochs,
             callbacks=[
                 callbacks.EarlyStopping(patience=5, restore_best_weights=True),
                 callbacks.ReduceLROnPlateau(factor=0.5, patience=3),
