@@ -12,7 +12,7 @@ from ..preprocessing import ImagePreprocessor, TextPreprocessor
 def build_model():
     text_input = tf.keras.Input(shape=(), dtype=tf.string, name='text_input')
     text_presense = DataPresense()(text_input)   
-    text_branch = TextBranchUSE(encoder_size='small')(text_input)
+    text_branch = USEBranch(encoder_size='small')(text_input)
     text_branch = layers.Multiply()([text_branch, text_presense])
 
     image_input = tf.keras.Input(shape=(224, 224, 3), dtype=tf.float32, name='image_input')
@@ -57,7 +57,7 @@ def build_and_train(
         validation_data=val_ds,
         epochs=epochs,
         callbacks=[
-            callbacks.EarlyStopping(patience=patience, restore_best_weights=True, min_delta=min_delta), # type: ignore
+            callbacks.EarlyStopping(patience=patience,restore_best_weights=True, min_delta=min_delta), # type: ignore
             callbacks.ReduceLROnPlateau(factor=0.5, patience=3),
         ]
     )
@@ -141,7 +141,7 @@ def evaluate_data_combinations(model, validation_Data:DataFrame, images_dir:str)
 def load_model(path: str|Path):
     path = Path(path)
     return models.load_model(path, custom_objects={
-        TextBranchUSE.__name__: TextBranchUSE,
+        USEBranch.__name__: USEBranch,
         ImageBranch.__name__: ImageBranch,
         DataPresense.__name__: DataPresense
     })

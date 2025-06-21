@@ -6,7 +6,7 @@ from keras import layers
 from ..branch_abstract import BranchAbstract
 
 
-class TextBranchUSE(BranchAbstract):
+class USEBranch(BranchAbstract):
     def __init__(self, encoder_size:Literal['small', 'large'] = 'small', **kwargs):
         config = {
             'encoder_size': encoder_size,
@@ -31,7 +31,7 @@ class TextBranchUSE(BranchAbstract):
         return x
 
 
-class ConditionalUSEBranch(TextBranchUSE): 
+class ConditionalUSEBranch(USEBranch): 
     def call(self, inputs, training=None, mask=None):
         have_text = tf.strings.length(inputs) > 0
         return tf.cond(
