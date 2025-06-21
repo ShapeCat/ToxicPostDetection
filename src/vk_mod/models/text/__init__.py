@@ -1,3 +1,3 @@
-from .text_branch import TextBranch
+from .text_branch import GRUBranch
 from .text_branch_use import USEBranch, ConditionalUSEBranch
 from .tunable_text_branch import TunableUSEBranch, ConfigurableConditionalUSEBranch

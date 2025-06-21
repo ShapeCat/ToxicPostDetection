@@ -3,7 +3,7 @@ from keras import layers
 from ..branch_abstract import BranchAbstract
 
 
-class TextBranch(BranchAbstract):
+class GRUBranch(BranchAbstract):
     def __init__(self, max_words:int = 20000, max_len:int = 200, embedding_dim:int = 128, **kwargs) -> None:
         config = {
             "max_words": max_words,
