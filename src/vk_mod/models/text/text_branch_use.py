@@ -20,14 +20,14 @@ class TextBranchUSE(BranchAbstract):
         else:
             raise ValueError(f"Unknown encoder size: {encoder_size}")   
         self.embed = hub.KerasLayer(model_url, trainable=False, name='embeding') 
-        
-        self.dense = layers.Dense(128, activation='relu', name='feature_extractor')
+
         self.dropout = layers.Dropout(0.3, name='dropout')
-        
+        self.dense = layers.Dense(128, activation='relu', name='feature_extractor')
+       
     def call(self, inputs, training=None, mask=None):
         x = self.embed(inputs)
-        x = self.dense(x)
         x = self.dropout(x)
+        x = self.dense(x)
         return x
 
 

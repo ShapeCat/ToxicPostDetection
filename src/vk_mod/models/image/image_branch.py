@@ -27,14 +27,15 @@ class ImageBranch(BranchAbstract):
             raise ValueError(f"Unknown base model: {base_model}")
         self.base_model.trainable = False
         self.pooling2d = layers.GlobalAveragePooling2D(name='pooling2d')
-        self.dense = layers.Dense(128, activation='relu', name='feature_extractor')
         self.dropout = layers.Dropout(0.3, name='dropout')
+        self.dense = layers.Dense(192, activation='relu', name='feature_extractor')
+
 
     def call(self, inputs, training=None, mask=None):
         x = self.base_model(inputs)
         x = self.pooling2d(x)
-        x = self.dense(x)
         x = self.dropout(x)
+        x = self.dense(x)
         return x
 
 
