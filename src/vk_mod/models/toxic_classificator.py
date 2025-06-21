@@ -136,3 +136,12 @@ def evaluate_data_combinations(model, validation_Data:DataFrame, images_dir:str)
             continue
         ds = DatasetGenerator(subgroup, text_preprocessor, image_preprocessor).create_dataset()
         model.evaluate(ds, verbose=1)
+
+
+def load_model(path: str|Path):
+    path = Path(path)
+    return models.load_model(path, custom_objects={
+        TextBranchUSE.__name__: TextBranchUSE,
+        ImageBranch.__name__: ImageBranch,
+        DataPresense.__name__: DataPresense
+    })
