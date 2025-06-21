@@ -58,7 +58,7 @@ def build_and_train(
         epochs=epochs,
         callbacks=[
             callbacks.EarlyStopping(patience=patience, restore_best_weights=True, min_delta=min_delta), # type: ignore
-            callbacks.ReduceLROnPlateau(factor=0.5, patience=1),
+            callbacks.ReduceLROnPlateau(factor=0.5, patience=3),
         ]
     )
 
