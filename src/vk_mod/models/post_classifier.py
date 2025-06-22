@@ -38,20 +38,19 @@ def build_model():
     return model
 
 
-def build_and_train(
-    train_df: DataFrame, 
-    val_df: DataFrame, 
-    images_dir: str, 
-    epochs: int = 10, 
-    patience: int = 5, 
-    min_delta: float = 0.01,
-    save_path: str | None = None
-):
-    model = build_model()
+def train_model(model:models.Model,
+                train_df: DataFrame,
+                val_df: DataFrame,
+                images_dir: str,
+                epochs: int = 10,
+                patience: int = 5,
+                min_delta: float = 0.01,
+                save_path: str | None = None
+                ):
     text_preprocessor = TextPreprocessor()
     image_preprocessor = ImagePreprocessor(images_dir, image_model='mobilenet')
-    train_ds = DatasetGenerator(train_df, text_preprocessor, image_preprocessor, batch_size=64).create_dataset()
-    val_ds = DatasetGenerator(val_df, text_preprocessor, image_preprocessor, batch_size=64).create_dataset()
+    train_ds = DatasetGenerator(train_df, text_preprocessor, image_preprocessor).create_dataset()
+    val_ds = DatasetGenerator(val_df, text_preprocessor, image_preprocessor).create_dataset()
     history = model.fit(train_ds,
                         validation_data=val_ds,
                         epochs=epochs,
