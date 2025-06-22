@@ -125,9 +125,9 @@ def evaluate_data_combinations(model, validation_Data:DataFrame, images_dir:str)
     has_image = validation_Data['image_name'].apply(lambda x: len(str(x).strip()) > 0)
     
     subgroups = {
-        'Только Текст': validation_Data[has_text & ~has_image],
-        'Только Картинка': validation_Data[~has_text & has_image],
-        'Только Текст+Картинка': validation_Data[has_text & has_image],
+        'Текст': validation_Data[has_text & ~has_image],
+        'Картинка': validation_Data[~has_text & has_image],
+        'Текст и Изображение': validation_Data[has_text & has_image],
         'Весь набор': validation_Data
     }
     for name, subgroup in subgroups.items():
