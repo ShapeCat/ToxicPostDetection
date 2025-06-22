@@ -57,8 +57,5 @@ Links.md
 # Dev configs
 config-dev.ini
 
-#Trained models
-/pretrained_models
-
 #venv
 /.venv
