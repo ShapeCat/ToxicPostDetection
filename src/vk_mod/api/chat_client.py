@@ -25,7 +25,6 @@ class ChatClient(BaseAPIClient):
         return response
 
     def get_by_id(self,
-                  user_id: str,
                   message_id: int            
                   ) -> dict[str, str]:
         """Get a message by id from a chat.
@@ -38,7 +37,6 @@ class ChatClient(BaseAPIClient):
             dict[str, str]: The retrieved message.
         """
         params = {
-            'peer_id': user_id,
             'message_ids': message_id,
         }
         response = self.get_request("messages.getById", params)
