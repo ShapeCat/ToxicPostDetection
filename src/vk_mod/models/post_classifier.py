@@ -52,19 +52,18 @@ def build_and_train(
     image_preprocessor = ImagePreprocessor(images_dir, image_model='mobilenet')
     train_ds = DatasetGenerator(train_df, text_preprocessor, image_preprocessor, batch_size=64).create_dataset()
     val_ds = DatasetGenerator(val_df, text_preprocessor, image_preprocessor, batch_size=64).create_dataset()
-    model.fit(
-        train_ds,
-        validation_data=val_ds,
-        epochs=epochs,
-        callbacks=[
-            callbacks.EarlyStopping(patience=patience,restore_best_weights=True, min_delta=min_delta), # type: ignore
-            callbacks.ReduceLROnPlateau(factor=0.5, patience=3),
-        ]
-    )
+    history = model.fit(train_ds,
+                        validation_data=val_ds,
+                        epochs=epochs,
+                        callbacks=[
+                            callbacks.EarlyStopping(patience=patience,restore_best_weights=True, min_delta=min_delta), # type: ignore
+                            callbacks.ReduceLROnPlateau(factor=0.5, patience=3)
+                            ]
+                        )
 
     if save_path:
         model.save(save_path)
-    return model    
+    return model, history
 
 
 def predict_from_file(model, text: str, image_path: str) -> float:
