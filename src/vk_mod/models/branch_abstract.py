@@ -6,8 +6,9 @@ import tensorflow as tf
 @tf.keras.utils.register_keras_serializable()
 class BranchAbstract(Model):
     def __init__(self, **kwargs):        
-        self.config = kwargs.pop('config', {})
+        config = kwargs.pop('config', {})
         super().__init__(**kwargs)
+        self.config = config
 
     def get_config(self):
         config = super().get_config()
