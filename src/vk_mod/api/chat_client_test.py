@@ -23,7 +23,6 @@ def test_send_message_success(chat_client, requests_mock):
 
 
 def test_get_message_by_id_success(chat_client, requests_mock):
-    user_id = 12345
     message_id = 1
     expected_response = {
         "response": 
@@ -34,11 +33,10 @@ def test_get_message_by_id_success(chat_client, requests_mock):
     }
     requests_mock.get(f"{BaseAPIClient.url}messages.getById", json=expected_response)
     
-    result = chat_client.get_by_id(user_id, message_id)
+    result = chat_client.get_by_id(message_id)
 
     assert isinstance(result, dict) 
     assert result["id"] == 1
-    assert f"peer_id={user_id}" in requests_mock.last_request.url
     assert f"message_ids={message_id}" in requests_mock.last_request.url
 
 
