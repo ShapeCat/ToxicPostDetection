@@ -18,4 +18,4 @@ class BranchAbstract(Model):
     @classmethod
     def from_config(cls, config, custom_objects=None):
         custom_config = config.pop("config", {}) 
-        return cls(**custom_config, **config)
+        return cls(config=custom_config, **config)
