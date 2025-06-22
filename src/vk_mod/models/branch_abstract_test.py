@@ -17,10 +17,7 @@ def test_default_initialize_success():
     assert branch.config == {}
 
 
-def test_serealize_and_deserealize_success_success():
-    branch = BranchAbstract(config=test_config)
+def test_get_config_success():
+    branch = BranchAbstract(test_config)
     config = branch.get_config()
-    assert config["config"] == test_config
-
-    loaded_branch = BranchAbstract.from_config(config)
-    assert loaded_branch.config == test_config
+    assert config == test_config

@@ -9,6 +9,3 @@ class LayerAbstract(Layer):
     def get_config(self) -> dict:
         return super().get_config()
     
-    @classmethod
-    def from_config(cls, config, custom_objects=None):
-        return cls(**config)
